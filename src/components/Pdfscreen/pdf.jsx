@@ -1,6 +1,7 @@
 import React, { useRef } from "react";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const TamilElectionPage = () => {
     const contentRef = useRef(null);
@@ -12,7 +13,8 @@ const TamilElectionPage = () => {
             .then((canvas) => {
                 const imgData = canvas.toDataURL("image/png");
                 const pdf = new jsPDF("p", "mm", "a4");
-                const pageWidth = 210; // A4 width in mm
+
+                const pageWidth = 210;
                 const imgWidth = pageWidth;
                 const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
@@ -23,50 +25,47 @@ const TamilElectionPage = () => {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-200 p-4">
-            {/* A4 Sized Content */}
-            <div
-                className="relative w-[210mm] h-[297mm] bg-white border border-gray-400 shadow-2xl rounded-lg overflow-hidden flex flex-col"
-                ref={contentRef}
-            >
-                {/* Header */}
-                <div className="bg-red-700 text-white text-center py-4 sticky top-0 w-full rounded-t-lg z-10 shadow-md">
-                    <h1 className="text-3xl font-bold">நாம் தமிழர் கட்சி</h1>
-                    <h2 className="text-lg mt-1">செந்தமிழன் சீமான்</h2>
-                    <p className="text-sm">தமிழீழம் ஓரியடிவிடும் நாள்: 04-08-2013</p>
+        <div className="container d-flex flex-column align-items-center py-4">
+            <div className="card border border-secondary shadow-lg" style={{ width: "210mm", height: "297mm", position: "relative" }} ref={contentRef}>
+                {/* Header Section */}
+                <div className="w-100" style={{ height: "40mm" }}>
+                    <img src="/Header.jpg" alt="Header" className="img-fluid w-100 h-100" style={{ objectFit: "cover" }} crossOrigin="anonymous" />
                 </div>
 
-                {/* Scrollable Content */}
-                <div className="flex-1 px-10 py-6 text-center overflow-auto">
-                    <h2 className="text-2xl font-bold text-gray-800 leading-relaxed">
-                        இராமநாதபுரம் திருவாடானை மண்டலம் <br /> பொது தேர்தல் - 2025
-                    </h2>
-                    <p className="text-gray-700 mt-2">வாக்கு எண்ணிக்கை</p>
+                {/* Main Content Section */}
+                <div className="p-4" style={{ flex: 1,fontSize:'14px', textAlign: "justify" ,marginTop:"30px",marginLeft:'30px',marginRight:"30px"}}>
+                    <h5 className="text-center fw-bold text-dark">அறிவிப்பு:</h5>
+                    <p className="text-dark  " style={{marginTop:'40px'}}>
+                        சேலம் மாவட்டம், மேட்டூர் தொகுதி, <strong>207</strong>ஆவது வாக்குச்சாவடியில்
+                        <strong> சிவானந்தம் வீரபாண்டியன் (18574358150) </strong>, நாம் தமிழர் கட்சி - இரணியூர் பாசறையின் மாபெரும் ஒருங்கிணைப்பாளராக
+                        ஒருமனதாக நியமிக்கப்படுகிறார்.
+                    </p>
+                    <p className="text-dark">
+                        இதற்கு, கட்சியின் அனைத்து உறுப்பினர்களும், மாவட்ட மற்றும் ஒன்றிய முழு ஒருங்கிணைப்பாளர்களும் ஒத்துழைப்பு வழங்க வேண்டும் என்று கேட்டுக் கொள்கிறோம்.
+                    </p>
+                    <p className="text-dark">
+                        இது தொடர் வெற்றியை நோக்கி நாம் தமிழர் கட்சி முன்னேற தொடர்ந்த பயணத்திற்கான உறுதிப்பாட்டாகும்.
+                    </p>
+                    <p className="text-dark">
+                        கட்சியின் அனைத்து உறுப்பினர்களும், ஆதரவாளர்களும், பொறுப்பாளர்களும் நம்பிக்கையுடன் செயல்பட வேண்டும்.
+                    </p>
 
-                    {/* Logo */}
-                    <div className="flex justify-center my-4">
-                        <img
-                            src={`${window.location.origin}/logo1.png`}
-                            alt="Logo"
-                            className="w-60 h-auto rounded-lg border shadow-md"
-                            crossOrigin="anonymous"
-                        />
+                    {/* Signature Section */}
+                    <div className="text-end">
+                        <p className="fw-semibold">சீமான்</p>
+                        <p className="text-muted">தலைமை ஒருங்கிணைப்பாளர்</p>
                     </div>
                 </div>
 
-                {/* Footer */}
-                <div className="text-center border-t border-gray-300 py-3 text-gray-700 text-sm sticky bottom-0 bg-white z-10 shadow-md">
-                    <p className="mb-1">எண், DB, மடிப்பாக்கம் பகுதி, சென்னை 600116</p>
-                    <p>தொடர்புக்கு: 044-43408484 / 9092522522 | Email: naamtamizhar@gmail.com</p>
+                {/* Footer Section */}
+                <div className="w-100 position-absolute bottom-0" style={{ height: "20mm" }}>
+                    <img src="/Footer.jpg" alt="Footer" className="img-fluid w-100 h-100" style={{ objectFit: "cover" }} crossOrigin="anonymous" />
                 </div>
             </div>
 
-            {/* Download Button */}
-            <div className="text-center mt-4">
-                <button
-                    onClick={generatePDF}
-                    className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700"
-                >
+            {/* PDF Download Button */}
+            <div className="text-center mt-3">
+                <button onClick={generatePDF} className="btn btn-primary">
                     PDF பதிவிறக்க
                 </button>
             </div>
