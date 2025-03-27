@@ -10,6 +10,7 @@ import {
     faList,
     faUser
 } from "@fortawesome/free-solid-svg-icons";
+import "../../style.css";
 
 const State = () => {
     const [forms, setForms] = useState([{ id: 1, data: {} }]); // Array to store multiple forms

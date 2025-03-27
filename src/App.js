@@ -1,18 +1,26 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { useState } from "react";
 import Pdf from "./components/Pdfscreen/pdf"
 import PdfScreen1 from './components/Pdfscreen/pdf1.jsx';
-import Sidebar from "./components/main/index.jsx"
+import Lists from "./components/main/Lists.jsx";
+import State from "./components/main/State.jsx";
+import Sidebar from "./components/main/sidebar.jsx";
 
 function App() {
+  const [isCollapsed, setIsCollapsed] = useState(false); // Track sidebar state
   return (
     <div className="flex">
-      <Sidebar />
-      
-      <Routes>
-      <Route path="/pdf" element={<Pdf />} />
-      <Route path="/pdf1" element={<PdfScreen1 />} />
-      </Routes>
+      <Sidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
+
+      <div className={`content ${isCollapsed ? "expanded" : ""}`}>
+        <Routes>
+          <Route path="/" element={<State />} />
+          <Route path="/pdf" element={<Pdf />} />
+          <Route path="/pdf1" element={<PdfScreen1 />} />
+          <Route path="/lists" element={<Lists />} />
+        </Routes>
+      </div>
     </div>
   );
 }

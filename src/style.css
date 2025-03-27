@@ -93,20 +93,20 @@ body {
 /* Hide text in collapsed mode */
 .sidebar.collapsed .sidebar-item span {
     display: none;
-    /* text-align: center; */
 }
 
 /* Content Area */
-.content-area {
+.content {
     /* background-color: grey; */
     flex: 1;
     padding: 10px;
     transition: margin-left 0.3s ease-in-out;
     margin-left: 250px; /* When sidebar is expanded */
+    width: calc(100% - 250px); /* Adjust width accordingly */
 }
 
 /* Adjust when Sidebar is Collapsed */
-.content-area.expanded {
+.content.expanded {
     margin-left: 60px;
 }
 
