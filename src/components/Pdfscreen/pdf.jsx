@@ -3,7 +3,7 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-const TamilElectionPage = () => {
+const PdfScreen = () => {
     const contentRef = useRef(null);
 
     const generatePDF = () => {
@@ -73,4 +73,4 @@ const TamilElectionPage = () => {
     );
 };
 
-export default TamilElectionPage;
+export default PdfScreen;

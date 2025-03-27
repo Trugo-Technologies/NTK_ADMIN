@@ -1,6 +1,6 @@
-import logo from './logo.svg';
 import './App.css';
 import Pdf from "./components/Pdfscreen/pdf"
+import PdfScreen1 from './components/Pdfscreen/pdf1.jsx';
 import Dashboard from "./components/main/index.jsx"
 
 function App() {
@@ -8,6 +8,7 @@ function App() {
     <div className="App">
       <Dashboard />
       <Pdf />
+      <PdfScreen1 />
     </div>
   );
 }
