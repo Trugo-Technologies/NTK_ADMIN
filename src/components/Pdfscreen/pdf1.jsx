@@ -4,9 +4,12 @@ import React, { useRef } from "react";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { useReactToPrint } from "react-to-print";
 
 const PdfScreen1 = () => {
     const contentRef = useRef(null);
+
+    const reactToPrintFn = useReactToPrint({ contentRef });
 
     const generatePDF = () => {
         const input = contentRef.current;
@@ -25,7 +28,7 @@ const PdfScreen1 = () => {
 
             pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
             heightLeft -= pageHeight;
-            
+
             while (heightLeft > 0) {
                 position = heightLeft - imgHeight;
                 pdf.addPage();
@@ -38,19 +41,19 @@ const PdfScreen1 = () => {
     };
 
     return (
-        <div className="container d-flex flex-column align-items-center py-4">
-            <div className="card border border-secondary shadow-lg" 
-                style={{ width: "210mm", minHeight: "297mm", position: "relative" }}
-                ref={contentRef}>
-                
+        <div className="container d-flex flex-column align-items-center py-4" >
+            <div className="printcontent  " style={{ width: "210mm", minHeight: "297mm" }}
+                ref={contentRef}
+            >
+
                 {/* Header Section */}
-                <div className="w-100" style={{ height: "40mm" }}>
-                    <img src="/Header.jpg" alt="Header" className="img-fluid w-100 h-100" 
+                <div className="header w-100" style={{ height: "40mm" }}>
+                    <img src="/Header.jpg" alt="Header" className="img-fluid w-100 h-100"
                         style={{ objectFit: "cover" }} crossOrigin="anonymous" />
                 </div>
 
                 {/* Main Content Section */}
-                <div className="p-4" style={{ fontSize: '14px', marginTop: "10px" }}>
+                <div className="content " style={{ fontSize: '14px' }}>
                     <p className="text-center fw-bold text-dark" style={{ textDecoration: "underline" }}>
                         அறிவிப்பு :
                     </p>
@@ -153,64 +156,88 @@ const PdfScreen1 = () => {
                         </div>
 
                     </div>
-                    <div className="d-flex flex-column p-2" style={{ textAlign: "start", marginLeft: '30px' }}>
-                        <p className="fw-bold  ">மாணவர்  பாசறை பொறுப்பாளர்கள் - இராமநாதபுரம் திருவாடானை வடக்கு மாவட்டப் பொறுப்பாளர்</p>
 
-                        <div className="d-flex ">
-                            <div className="col">செயலாளர்</div>
-                            <div className="col">அருண்குமார்</div>
-                            <div className="col">17017056341</div>
-                            <div className="col">66</div>
-                        </div>
-                        <div className="d-flex pt-2">
-                            <div className="col">இணைச் செயலாளர்</div>
-                            <div className="col">அருண்குமார்</div>
-                            <div className="col">17017056341</div>
-                            <div className="col">66</div>
-                        </div>
-                        <div className="d-flex pt-2">
-                            <div className="col">துணைச் செயலாளர்</div>
-                            <div className="col">அருண்குமார்</div>
-                            <div className="col">17017056341</div>
-                            <div className="col">66</div>
-                        </div>
 
+                    <div className="pagecontent2" >
+                        <div className=" d-flex flex-column p-2" style={{ textAlign: "start", marginLeft: '30px', }}>
+
+                            <p className="fw-bold  ">மாணவர்  பாசறை பொறுப்பாளர்கள் - இராமநாதபுரம் திருவாடானை வடக்கு மாவட்டப் பொறுப்பாளர்</p>
+
+                            <div className="d-flex ">
+                                <div className="col">செயலாளர்</div>
+                                <div className="col">அருண்குமார்</div>
+                                <div className="col">17017056341</div>
+                                <div className="col">66</div>
+                            </div>
+                            <div className="d-flex pt-2">
+                                <div className="col">இணைச் செயலாளர்</div>
+                                <div className="col">அருண்குமார்</div>
+                                <div className="col">17017056341</div>
+                                <div className="col">66</div>
+                            </div>
+                            <div className="d-flex pt-2">
+                                <div className="col">துணைச் செயலாளர்</div>
+                                <div className="col">அருண்குமார்</div>
+                                <div className="col">17017056341</div>
+                                <div className="col">66</div>
+                            </div>
+
+                        </div>
+                        <div className="d-flex flex-column p-2 " style={{ textAlign: "start", marginLeft: '30px ', }}>
+                            <p className="fw-semibold  ">குருதி பாசறை பொறுப்பாளர்கள் - இராமநாதபுரம் திருவாடானை வடக்கு மாவட்டப் பொறுப்பாளர்</p>
+
+                            <div className="d-flex ">
+                                <div className="col">செயலாளர்</div>
+                                <div className="col">அருண்குமார்</div>
+                                <div className="col">17017056341</div>
+                                <div className="col">66</div>
+                            </div>
+                            <div className="d-flex pt-2">
+                                <div className="col">இணைச் செயலாளர் </div>
+                                <div className="col">அருண்குமார்</div>
+                                <div className="col">17017056341</div>
+                                <div className="col">66</div>
+                            </div>
+                            <div className="d-flex pt-2">
+                                <div className="col">துணைச் செயலாளர்</div>
+                                <div className="col">அருண்குமார்</div>
+                                <div className="col">17017056341</div>
+                                <div className="col">66</div>
+                            </div>
+
+                        </div>
+                        <div className="desContent d-flex flex-column p-2 " >
+
+                            <p className="  text-dark  " >
+                                மேற்கண்ட அனைவரும் <strong>நாம் தமிழர் கட்சி</strong>-
+                                <strong> இராமநாதபுரம் திருவாடானை மண்டலத்திற்குட்பட்ட பொறுப்பாளர்களாக </strong>நியமிக்கப்படுகிறார்கள். இவர்கள் அனைவருக்கும் , கட்சியின் அனைத்துநிலைப்  பொறுப்பாளாளர்களும் , அன்பு உறவுகள் அனைவரும் முழு ஒத்துழைப்பு
+                                நல்குமாறு அன்போடு கேட்டு கொள்ளப்படுகிறார்கள்
+                            </p>
+                            <p className="text-dark">
+                                புதிதாக பொறுபேற்கும் உறவுகள் அனைவர்க்கும் என் புரட்சி வாழ்த்துகள்.
+                                பொறுப்பையும் கடமையையும் உணர்ந்து நீங்கள் சிறப்பாகச் செயலாற்றுவீர்கள் என்ற  நம்பிக்கையோடு
+                            </p>
+
+                            {/* Signature Section */}
+                            <div className="d-flex flex-column align-items-center align-self-end">
+                                <p className="fw-semibold m-0">சீமான்</p>
+                                <p className="text-muted m-0">தலைமை ஒருங்கிணைப்பாளர்</p>
+                            </div>
+
+                        </div>
                     </div>
-                    <div className="d-flex flex-column p-2" style={{ textAlign: "start", marginLeft: '30px ' }}>
-                        <p className="fw-semibold  ">குருதி பாசறை பொறுப்பாளர்கள் - இராமநாதபுரம் திருவாடானை வடக்கு மாவட்டப் பொறுப்பாளர்</p>
 
-                        <div className="d-flex ">
-                            <div className="col">செயலாளர்</div>
-                            <div className="col">அருண்குமார்</div>
-                            <div className="col">17017056341</div>
-                            <div className="col">66</div>
-                        </div>
-                        <div className="d-flex pt-2">
-                            <div className="col">இணைச் செயலாளர் </div>
-                            <div className="col">அருண்குமார்</div>
-                            <div className="col">17017056341</div>
-                            <div className="col">66</div>
-                        </div>
-                        <div className="d-flex pt-2">
-                            <div className="col">துணைச் செயலாளர்</div>
-                            <div className="col">அருண்குமார்</div>
-                            <div className="col">17017056341</div>
-                            <div className="col">66</div>
-                        </div>
-
-                    </div>
-                    
                 </div>
                 {/* Footer Section */}
-                <div className="w-100 position-absolute bottom-0" style={{ height: "20mm" }}>
-                    <img src="/Footer.jpg" alt="Footer" className="img-fluid w-100 h-100" 
+                <div className="footer w-100" style={{ height: "20mm" }}>
+                    <img src="/Footer.jpg" alt="Footer" className="img-fluid w-100 h-100"
                         style={{ objectFit: "cover" }} crossOrigin="anonymous" />
                 </div>
             </div>
 
             {/* PDF Download Button */}
             <div className="text-center mt-3">
-                <button onClick={generatePDF} className="btn btn-primary">
+                <button onClick={() => reactToPrintFn()} className="btn btn-primary">
                     PDF பதிவிறக்க
                 </button>
             </div>
