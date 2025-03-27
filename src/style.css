@@ -1,14 +1,23 @@
 /* Reset & Global Styles */
 * {
     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 body {
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: auto;
     margin: 0;
     padding: 0;
     font-family: sans-serif;
+    overflow-x: hidden;
+    background-color: #F8F9FA;
+
+}
+
+.form-area {
+    background-color: #fff;
 }
 
 /* Dashboard Container */
@@ -21,7 +30,7 @@ body {
 .sidebar {
     width: 250px;
     height: 100vh;
-    background: #343a40;
+    background: #EE1B24;
     color: white;
     transition: width 0.3s ease-in-out;
     overflow: hidden;
@@ -46,14 +55,14 @@ body {
     cursor: pointer;
     padding: 10px;
     font-size: 20px;
-    color: white;
-    background: #23272b;
+    color: #000;
+    background: #FAE818;
     transition: background 0.3s;
 }
 
-.toggle-button:hover {
+/* .toggle-button:hover {
     background: #1d2124;
-}
+} */
 
 /* Sidebar Menu */
 .sidebar-menu {
@@ -63,6 +72,7 @@ body {
 
 /* Sidebar Items */
 .sidebar-item {
+    color: #000;
     display: flex;
     align-items: center;
     padding: 15px;
@@ -77,17 +87,20 @@ body {
 .sidebar-item span {
     margin-left: 15px;
     transition: opacity 0.3s ease-in-out;
+    color: #FAE818;
 }
 
 /* Hide text in collapsed mode */
 .sidebar.collapsed .sidebar-item span {
     display: none;
+    /* text-align: center; */
 }
 
 /* Content Area */
 .content-area {
+    /* background-color: grey; */
     flex: 1;
-    padding: 20px;
+    padding: 10px;
     transition: margin-left 0.3s ease-in-out;
     margin-left: 250px; /* When sidebar is expanded */
 }
@@ -100,7 +113,8 @@ body {
 /* Dashboard Tabs */
 .tab-content h4 {
     text-align: left;
-    margin-bottom: 20px;
+    /* background-color: #fff; */
+    /* margin-bottom: 20px; */
 }
 
 /* Align Form Labels */
