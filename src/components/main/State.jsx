@@ -386,7 +386,7 @@ const State = () => {
                                                             src="Header.jpg"
                                                             alt="Description"
                                                             className="img-fluid"
-                                                            style={{ maxWidth: "80px", height: "80px", borderRadius: "50px" }}
+                                                            style={{ maxWidth: "50px", height: "50px", borderRadius: "50px" }}
                                                             readOnly
                                                         />
                                                     </td>
@@ -419,7 +419,7 @@ const State = () => {
                                 onRequestClose={() => setModalIsOpen(false)}
                                 style={{
                                     content: {
-                                        width: "80%", // Adjust width as needed
+                                        width: "60%", // Adjust width as needed
                                         maxHeight: "80vh", // Limits the modal height
                                         margin: "auto",
                                         borderRadius: "10px",

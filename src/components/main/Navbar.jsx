@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 const HeaderNavbar = () => {
     const handleLogout = () => {
         alert('Logged out successfully');
-        
+
     };
 
     return (
@@ -18,14 +18,30 @@ const HeaderNavbar = () => {
                     <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
                         <li className="nav-item dropdown">
                             <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <img src="https://via.placeholder.com/30" alt="Profile" className="rounded-circle" />
+                                <img src="logo1.png" alt="Profile" className="rounded-circle" style={{ maxWidth: "50px", height: "50px", borderRadius: "50px" }}
+                                />
                             </a>
-                            <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <li><a className="dropdown-item" href="#">Profile</a></li>
-                                <li><a className="dropdown-item" href="#">Settings</a></li>
+                            <ul
+                                className="dropdown-menu dropdown-menu-end shadow"
+                                aria-labelledby="navbarDropdown"
+                                style={{ position: "absolute", top: "60px", right: "0", zIndex: 1055 }}
+                            >
+                                <li><a className="dropdown-item" href="#">சிவானந்தம்</a></li>
+
                                 <li><hr className="dropdown-divider" /></li>
-                                <li><button className="dropdown-item" onClick={handleLogout}>Logout</button></li>
+                                <li>
+                                    <button
+                                        className="dropdown-item d-flex align-items-center"
+
+                                        onClick={handleLogout}
+                                    >
+                                        <i className="bi bi-box-arrow-right me-2" style={{ color: "#000" }}></i> LOGOUT
+                                    </button>
+                                </li>
+
                             </ul>
+
+
                         </li>
                     </ul>
                 </div>
