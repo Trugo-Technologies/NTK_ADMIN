@@ -1,22 +1,21 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: 'Uni Ila-Sundaram-07', sans-serif;
+ 
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: 'Uni Ila-Sundaram-07', sans-serif;
+
 }
 
+
+
 @media print {
+  
   @page {
-    size: A4;
-    /* Standard page size */
-    margin: 10mm 10mm 10mm;
+    size: A4; /* Standard page size */
+    margin: 0; /* Remove all margins to eliminate white space */
   }
 
   .printcontent {
@@ -31,7 +30,7 @@ code {
     width: 100%;
     height: 50mm;
     background: white;
-
+    z-index: 10;
   }
 
   /* Fixed Footer */
@@ -40,36 +39,26 @@ code {
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 30mm;
-    /* Adjust based on your footer height */
+    height: 20mm; 
     background: white;
     text-align: center;
-    padding: 10px;
+    z-index: 10;
+   
   }
 
   /* Adjust content so it doesn't overlap with header/footer */
   .content {
-    position: relative;
-    padding: 10rem 0;
-    /* margin-top: 10rem; 
-    margin-bottom: 10rem;  */
+    margin: 50mm 10mm 30mm 10mm; 
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Uni Ila-Sundaram-07';
   }
 
-  body {
-    display: table;
-    table-layout: fixed;
-    padding-top: 2.5cm;
-    padding-bottom: 2.5cm;
-    height: auto;
-  }
-
+  
   .pagecontent2 {
-
-    page-break-before: always;
-    /* Forces a new page */
-
-    padding-top: 10rem;
-    /* Extra space inside */
+    page-break-before: always; /* Forces a new page */
+    margin: 0;
+    padding-top: 50mm; /* Ensure space below header */
   }
 
   .desContent  {
@@ -97,4 +86,8 @@ code {
 .desContent2 p {
   text-indent: 30px;
 }
+
+  p, h1, h2, h3, h4, h5, h6 {
+    page-break-inside: avoid;
+  }
 }

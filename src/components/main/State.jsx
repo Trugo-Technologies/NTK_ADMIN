@@ -85,7 +85,7 @@ const State = () => {
     return (
         <div className="tab-content">
             <div
-                className="d-flex justify-content-between align-items-center mb-4 bg-white p-3 shadow-sm sticky-top"
+                className="d-flex justify-content-between align-items-center mb-4 mt-4 bg-white p-3 shadow-sm sticky-top"
                 style={{ top: "0", zIndex: "1020" }}
             >
                 <h6 className="text-start mb-0"><b>பொறுப்பாளர்கள் தகவல்கள்</b></h6>
@@ -98,7 +98,7 @@ const State = () => {
                     <Button className="flex-shrink-0" style={{backgroundColor:"#FAE818",color:"#000",border:"none"}} onClick={addNewForm}>+ Add</Button>
                 </div>
             </div>
-
+            <div className="scrollable-form">
             <Form onSubmit={handleSubmit}>
                 {forms.map((form, index) => (
                     <div key={form.id} className="mb-4 border p-3 rounded shadow-sm form-area">
@@ -348,6 +348,7 @@ const State = () => {
                     </Button>
                 </div>
             </Form>
+            </div>
         </div>
     );
 }

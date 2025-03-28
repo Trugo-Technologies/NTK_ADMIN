@@ -10,21 +10,25 @@ const PdfScreen = () => {
 
     const generatePDF = () => {
         const input = contentRef.current;
-
+    
         html2canvas(input, { scale: 3, useCORS: true, logging: false })
             .then((canvas) => {
                 const imgData = canvas.toDataURL("image/png");
-                const pdf = new jsPDF("p", "mm", "a4");
-
-                const pageWidth = 210;
+                const pdf = new jsPDF("p", "mm", "a4", true); // 'true' for better quality
+    
+                const pageWidth = 210; // A4 width in mm
+                const pageHeight = 297; // A4 height in mm
                 const imgWidth = pageWidth;
                 const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
+    
+                // Add the image without any margin
                 pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
                 pdf.save("Election_Report.pdf");
             })
             .catch((error) => console.error("Error generating PDF:", error));
     };
+    
+    
 
     return (
         <div className="container d-flex flex-column align-items-center py-4">

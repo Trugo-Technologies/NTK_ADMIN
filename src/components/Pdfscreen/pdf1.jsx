@@ -234,7 +234,7 @@ const PdfScreen1 = () => {
 
                 </div>
                 {/* Footer Section */}
-                <div className="footer w-100" style={{ height: "20mm" }}>
+                <div className="footer w-100" >
                     <img src="/Footer.jpg" alt="Footer" className="img-fluid w-100 h-100"
                         style={{ objectFit: "cover" }} crossOrigin="anonymous" />
                 </div>
