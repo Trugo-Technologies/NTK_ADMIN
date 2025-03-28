@@ -8,9 +8,9 @@ const HeaderNavbar = () => {
     };
 
     return (
-        <nav className="navbar navbar-expand-lg navbar-light bg-light shadow-sm p-3 mb-4">
+        <nav className="navbar navbar-expand-lg shadow-sm p-3 mb-4">
             <div className="container-fluid">
-                <a className="navbar-brand" href="#">நாம் தமிழர் கட்சி - புதிய பொறுப்பாளர் </a>
+                <a className="navbar-brand " style={{color:"white",fontWeight:"bold"}}>நாம் தமிழர் கட்சி - புதிய பொறுப்பாளர் </a>
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
                 </button>
