@@ -11,9 +11,9 @@ import Header from "./components/main/Navbar.jsx"
 function App() {
   return (
     <div className="flex">
-      <Sidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
+      <Sidebar />
    <Header/>
-      <div className={`content-area ${isCollapsed ? "expanded" : ""}`}>
+      <div className={`content-area`}>
         <Routes>
           
           <Route path="/" element={<State />} />
