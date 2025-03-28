@@ -6,14 +6,16 @@ import PdfScreen1 from './components/Pdfscreen/pdf1.jsx';
 import Lists from "./components/main/Lists.jsx";
 import State from "./components/main/State.jsx";
 import Sidebar from "./components/main/sidebar.jsx";
+import Header from "./components/main/Navbar.jsx"
 
 function App() {
   return (
     <div className="flex">
-      <Sidebar />
-
-      <div className="content-area">
+      <Sidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
+   <Header/>
+      <div className={`content-area ${isCollapsed ? "expanded" : ""}`}>
         <Routes>
+          
           <Route path="/" element={<State />} />
           <Route path="/pdf" element={<Pdf />} />
           <Route path="/pdf1" element={<PdfScreen1 />} />
