@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Modal from "react-modal";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -8,11 +10,20 @@ import {
     faCogs,
     faTable,
     faList,
-    faUser
+    faUser,
+    faEye
 } from "@fortawesome/free-solid-svg-icons";
 import "../../style.css";
+import Pdf from "../Pdfscreen/pdf";
 
 const State = () => {
+    const navigate = useNavigate();
+    const [modalIsOpen, setModalIsOpen] = useState(false);
+    // Hardcoded data for autofill
+    const memberData = [
+        { memberNumber: "1001", fullName: "ஹரி ஹரன் தியாகராஜன்", voteNumber: "123", name: "ஹரி ஹரன்", fatherName: "தியாகராஜன்", image: "Header.jpg" },
+        { memberNumber: "1002", fullName: "கோபிநாத் வசந்தகுமார் ", voteNumber: "124", name: "கோபிநாத்", fatherName: "வசந்தகுமார்", image: "Footer.jpg" }
+    ];
     const [forms, setForms] = useState([{ id: 1, data: {} }]); // Array to store multiple forms
     const [tableForm, setTableForm] = useState([{ id: 1, data: {} }])
 
@@ -39,41 +50,50 @@ const State = () => {
 
     // Handle form data change
     const handleInputChange = (index, field, value, isTableForm = false) => {
+        console.log(`Field: ${field}, Value: ${value}, isTableForm: ${isTableForm}`);
+
         if (isTableForm) {
-            // Update the tableForm data
             setTableForm(prevTableForms => {
                 const updatedTableForms = [...prevTableForms];
-                updatedTableForms[index] = {
-                    ...updatedTableForms[index],
-                    data: {
-                        ...updatedTableForms[index].data,
-                        [field]: value, // Update the field in the table form
-                    },
-                };
+
+                if (field === "memberNumber") {
+                    const selectedMember = memberData.find(m => m.memberNumber === String(value));
+
+                    if (selectedMember) {
+                        // If member is found, update all fields
+                        updatedTableForms[index].data = { ...selectedMember };
+                    } else {
+                        // If no member is found, keep only the entered memberNumber
+                        updatedTableForms[index].data = { memberNumber: value };
+                    }
+                } else {
+                    updatedTableForms[index].data[field] = value;
+                }
+
                 return updatedTableForms;
             });
         } else {
-            // Update the main form data
             setForms(prevForms => {
                 const updatedForms = [...prevForms];
-                updatedForms[index] = {
-                    ...updatedForms[index],
-                    data: {
-                        ...updatedForms[index].data,
-                        [field]: value, // Update the field in the form
-                    },
-                };
 
-                // Reset "appointment" if "responsibility" changes
-                if (field === "responsibility") {
-                    updatedForms[index].data.appointment = "";
+                if (field === "memberNumber") {
+                    const selectedMember = memberData.find(m => m.memberNumber === String(value));
+                    console.log("Selected Member:", selectedMember);
+
+                    if (selectedMember) {
+                        updatedForms[index].data = { ...selectedMember };
+                    } else {
+                        updatedForms[index].data = { memberNumber: value };
+                    }
+                } else {
+                    updatedForms[index].data[field] = value;
                 }
 
+                console.log("Updated Forms:", updatedForms);
                 return updatedForms;
             });
         }
     };
-
 
     // Handle form submission
     const handleSubmit = (e) => {
@@ -95,7 +115,7 @@ const State = () => {
                     <span className="fw-bold">புதிய பொறுப்பாளர் தகவல்களின்  எண்ணிக்கை : {forms.length}</span>
 
                     {/* Add Button */}
-                    <Button className="flex-shrink-0" style={{backgroundColor:"#FAE818",color:"#000",border:"none"}} onClick={addNewForm}>+ Add</Button>
+                    <Button className="flex-shrink-0" style={{ backgroundColor: "#FAE818", color: "#000", border: "none" }} onClick={addNewForm}>+ Add</Button>
                 </div>
             </div>
 
@@ -126,8 +146,8 @@ const State = () => {
                                 <Form.Group className="mb-3">
                                     <Form.Label>வாக்கக எண்</Form.Label>
                                     <Form.Control
-                                        type="email"
-                                        onChange={(e) => handleInputChange(index, "email", e.target.value)}
+                                        type="number"
+                                        onChange={(e) => handleInputChange(index, "number", e.target.value)}
                                     />
                                 </Form.Group>
                             </div>
@@ -135,7 +155,7 @@ const State = () => {
 
                         {/* Second Row */}
                         <div className="row">
-                        <div className="col-md-4">
+                            <div className="col-md-4">
                                 <Form.Group className="mb-3">
                                     <Form.Label>கட்சிப்பொறுப்பு நிலை</Form.Label>
                                     <Form.Select onChange={(e) => handleInputChange(index, "party_responsibility_status", e.target.value)}>
@@ -186,7 +206,7 @@ const State = () => {
 
                         {/* Input Field to Show Selected Value */}
                         {(forms[index].data.appointment && (forms[index].data.party_responsibility_status === "state" || forms[index].data.party_responsibility_status === "zone")) && (
-                            <div className="mb-4 p-3 mt-4" style={{border:"1px solid black", borderRadius:"5px"}}>
+                            <div className="mb-4 p-3 mt-4" style={{ border: "1px solid black", borderRadius: "5px" }}>
 
                                 {/* First Row: Showing Appointment */}
                                 <div className="mb-3 col-md-4">
@@ -211,43 +231,73 @@ const State = () => {
                                             <th style={{ width: "15%" }}>பெயர்</th>
                                             <th style={{ width: "15%" }}>த/க பெயர்</th>
                                             <th style={{ width: "10%" }}>புகைப்படம்</th>
+                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>
-                                                <Form.Control type="text" />
-                                            </td>
-                                            <td>
-                                                <Form.Control type="text" />
-                                            </td>
-                                            <td>
-                                                <Form.Control type="text" />
-                                            </td>
-                                            <td>
-                                                <Form.Control type="text" readOnly />
-                                            </td>
-                                            <td>
-                                                <Form.Control type="text" readOnly />
-                                            </td>
-                                            <td>
-                                                <img
-                                                    src="Header.jpg"
-                                                    alt="Description"
-                                                    className="img-fluid rounded"
-                                                    style={{ maxWidth: "80px", height: "80px" }}
-                                                    readOnly
-                                                />
-                                            </td>
-                                        </tr>
+                                        {tableForm.map((form, index) => (
+                                            <tr key={index}>
+                                                <td>
+                                                    <Form.Control
+                                                        type="text"
+                                                        value={form.data.memberNumber || ""}
+                                                        onChange={(e) => handleInputChange(index, "memberNumber", e.target.value, true)}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <Form.Control
+                                                        type="text"
+                                                        value={form.data.fullName || ""}
+                                                        onChange={(e) => handleInputChange(index, "fullName", e.target.value, true)}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <Form.Control
+                                                        type="text"
+                                                        value={form.data.voteNumber || ""}
+                                                        onChange={(e) => handleInputChange(index, "voteNumber", e.target.value, true)}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <Form.Control
+                                                        type="text"
+                                                        value={form.data.name || ""}
+                                                        readOnly
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <Form.Control
+                                                        type="text"
+                                                        value={form.data.fatherName || ""}
+                                                        readOnly
+                                                    />
+                                                </td>
+                                                <td>
+                                                    {form.data.image ? (
+                                                        <img
+                                                            src={form.data.image}
+                                                            alt="Member"
+                                                            className="img-fluid"
+                                                            style={{ maxWidth: "50px", height: "50px", borderRadius: "50px" }}
+                                                        />
+                                                    ) : (
+                                                        <span>தகவல் இல்லை</span>
+                                                    )}
+                                                </td>
+                                                <td>
+                                                    <Button className="button" style={{ backgroundColor: "#FAE818", color: "#000", border: "none" }} onClick={() => setModalIsOpen(true)}>
+                                                        <FontAwesomeIcon icon={faEye} />
+                                                    </Button>
+                                                </td>
+                                            </tr>
+                                        ))}
                                     </tbody>
                                 </table>
-
                             </div>
                         )}
 
                         {(forms[index].data.appointment && (forms[index].data.party_responsibility_status === "party_district" || forms[index].data.party_responsibility_status === "vol" || forms[index].data.party_responsibility_status === "branch")) && (
-                            <div className="mb-4 p-3 mt-4" style={{border:"1px solid black"}}>
+                            <div className="mb-4 p-3 mt-4" style={{ border: "1px solid black" }}>
 
                                 {/* First Row: Showing Appointment */}
                                 <div className="row mb-3">
@@ -265,7 +315,7 @@ const State = () => {
 
                                     {/* Add Button Aligned to Right */}
                                     <div className="col-md-8 d-flex justify-content-end align-items-end">
-                                        <Button className="flex-shrink-0" style={{backgroundColor:"#FAE818",color:"#000",border:"none"}} onClick={addNewTableForm}>
+                                        <Button className="flex-shrink-0" style={{ backgroundColor: "#FAE818", color: "#000", border: "none" }} onClick={addNewTableForm}>
                                             <b>+</b>
                                         </Button>
                                     </div>
@@ -282,60 +332,136 @@ const State = () => {
                                             <th style={{ width: "15%" }}>பெயர்</th>
                                             <th style={{ width: "15%" }}>த/க பெயர்</th>
                                             <th style={{ width: "10%" }}>புகைப்படம்</th>
+                                            <th></th>
                                         </tr>
                                     </thead>
                                     {tableForm.map((form, index) => (
-                                        <tbody>
+                                        <tbody key={index}>
                                             <tr>
                                                 <td>
-                                                    <Form.Select onChange={(e) => handleInputChange(index, "role", e.target.value)}>
+                                                    <Form.Select
+                                                        value={form.data?.appointment || ""}
+                                                        onChange={(e) => handleInputChange(index, "role", e.target.value)}
+                                                    >
                                                         <option>தேர்ந்தெடு</option>
-                                                        <option value="party">கட்சி</option>
-                                                        <option value="pasarai">பாசறை</option>
+
+                                                        {forms[index]?.data?.party_responsibility_status === "party_district" && forms[index]?.data?.responsibility === "party" && (
+                                                            <>
+                                                                <option value="party">தலைவர்</option>
+                                                                <option value="pasarai">செயலாளர்</option>
+                                                                <option value="pasarai">பொருளாளர்</option>
+                                                                <option value="pasarai">செய்தித் தொடர்பாளர்</option>
+                                                            </>
+                                                        )}
+
+                                                        {forms[index]?.data?.party_responsibility_status === "vol" && forms[index]?.data?.responsibility === "party" && (
+                                                            <>
+                                                                <option value="party">தலைவர்</option>
+                                                                <option value="pasarai">இணைத்தலைவர்</option>
+                                                                <option value="pasarai">துணைத்தலைவர்</option>
+                                                                <option value="pasarai">செயலாளர்</option>
+                                                                <option value="pasarai">இணைச் செயலாளர்</option>
+                                                                <option value="pasarai">துணைச் செயலாளர்</option>
+                                                                <option value="pasarai">பொருளாளர்</option>
+                                                                <option value="pasarai">செய்தித் தொடர்பாளர்</option>
+                                                            </>
+                                                        )}
+
+                                                        {(forms[index]?.data?.party_responsibility_status === "vol" || forms[index]?.data?.party_responsibility_status === "party_district") && forms[index]?.data?.responsibility === "pasarai" && (
+                                                            <>
+                                                                <option value="pasarai">செயலாளர்</option>
+                                                                <option value="pasarai">இணைச் செயலாளர்</option>
+                                                                <option value="pasarai">துணைச் செயலாளர்</option>
+                                                            </>
+                                                        )}
                                                     </Form.Select>
                                                 </td>
-                                                <td>
-                                                    <Form.Control type="text" />
-                                                </td>
-                                                <td>
-                                                    <Form.Control type="text" />
-                                                </td>
-                                                <td>
-                                                    <Form.Control type="text" />
-                                                </td>
-                                                <td>
-                                                    <Form.Control type="text" readOnly />
-                                                </td>
-                                                <td>
-                                                    <Form.Control type="text" readOnly />
-                                                </td>
+                                                <td><Form.Control type="text" /></td>
+                                                <td><Form.Control type="text" /></td>
+                                                <td><Form.Control type="text" /></td>
+                                                <td><Form.Control type="text" readOnly /></td>
+                                                <td><Form.Control type="text" readOnly /></td>
                                                 <td>
                                                     <img
                                                         src="Header.jpg"
                                                         alt="Description"
-                                                        className="img-fluid rounded"
-                                                        style={{ maxWidth: "80px", height: "80px" }}
+                                                        className="img-fluid"
+                                                        style={{ maxWidth: "80px", height: "80px", borderRadius: "50px" }}
                                                         readOnly
                                                     />
                                                 </td>
                                                 <td>
-                                                    {/* <Button variant="danger" onClick={() => removeTableForm(index)} disabled={tableForm.length === 1}> */}
-                                                        <FontAwesomeIcon style={{border:"none",backgroundColor:"#EE1B24",borderRadius:"5px",padding:"10px",cursor:"pointer"}} icon={faTimes} onClick={() => removeTableForm(index)} disabled={tableForm.length === 1}/>
-                                                    {/* </Button> */}
+                                                    <FontAwesomeIcon
+                                                        style={{
+                                                            border: "none",
+                                                            backgroundColor: "#EE1B24",
+                                                            borderRadius: "5px",
+                                                            padding: "10px",
+                                                            cursor: "pointer",
+                                                            marginTop: "20px"
+                                                        }}
+                                                        icon={faTimes}
+                                                        onClick={() => removeTableForm(index)}
+                                                        disabled={tableForm.length === 1}
+                                                    />
                                                 </td>
                                             </tr>
                                         </tbody>
                                     ))}
-                                </table>
 
+                                </table>
                             </div>
                         )}
+
+                        {/* Modal */}
+                        <Modal
+                            isOpen={modalIsOpen}
+                            onRequestClose={() => setModalIsOpen(false)}
+                            style={{
+                                content: {
+                                    width: "80%",
+                                    height: "80%",
+                                    margin: "auto",
+                                    borderRadius: "10px",
+                                    overflow: "hidden",
+                                    padding: "0",
+                                },
+                                overlay: {
+                                    backgroundColor: "rgba(0, 0, 0, 0.6)",
+                                },
+                            }}
+                        >
+                            <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+                                <button
+                                    onClick={() => setModalIsOpen(false)}
+                                    style={{
+                                        alignSelf: "flex-end",
+                                        margin: "10px",
+                                        padding: "5px 10px",
+                                        background: "red",
+                                        color: "white",
+                                        border: "none",
+                                        cursor: "pointer",
+                                    }}
+                                >
+                                    Close
+                                </button>
+                                <div>
+                                    <Pdf />
+                                </div>
+                                {/* <iframe
+                                    src="/pdf"
+                                    style={{ flex: 1, width: "100%", height: "100%", border: "none" }}
+                                    title="PDF Preview"
+                                /> */}
+                            </div>
+                        </Modal>
 
 
                         {/* Remove Button */}
                         <div className="text-end">
-                            <Button style={{backgroundColor:"#EE1B24",border:"none",color:"#000"}} onClick={() => removeForm(index)} disabled={forms.length === 1}>
-                                - Remove
+                            <Button style={{ backgroundColor: "#EE1B24", border: "none", color: "#000" }} onClick={() => removeForm(index)} disabled={forms.length === 1}>
+                                அகற்று
                             </Button>
                         </div>
                     </div>
@@ -343,7 +469,10 @@ const State = () => {
 
                 {/* Submit All Forms Button */}
                 <div className="text-center">
-                    <Button className="button" style={{backgroundColor:"#FAE818",color:"#000",border:"none"}} type="submit">
+                    {/* <Button className="button" style={{ backgroundColor: "#FAE818", color: "#000", border: "none" }} onClick={() => navigate("/pdf")}>
+                        <b>முன்னோட்டம்</b>
+                    </Button> */}
+                    <Button className="button" style={{ backgroundColor: "#FAE818", color: "#000", border: "none", marginLeft: "20px" }} type="submit">
                         <b>சேமி</b>
                     </Button>
                 </div>

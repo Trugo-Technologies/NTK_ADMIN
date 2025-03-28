@@ -8,12 +8,11 @@ import State from "./components/main/State.jsx";
 import Sidebar from "./components/main/sidebar.jsx";
 
 function App() {
-  const [isCollapsed, setIsCollapsed] = useState(false); // Track sidebar state
   return (
     <div className="flex">
-      <Sidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
+      <Sidebar />
 
-      <div className={`content-area ${isCollapsed ? "expanded" : ""}`}>
+      <div className="content-area">
         <Routes>
           <Route path="/" element={<State />} />
           <Route path="/pdf" element={<Pdf />} />

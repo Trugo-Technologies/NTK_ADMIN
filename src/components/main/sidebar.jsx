@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import State from "../main/State";
+import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faBars,
@@ -12,32 +12,24 @@ import {
 import { Link } from "react-router-dom";
 import "../../style.css";
 
-const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
-    const toggleSidebar = () => {
-        setIsCollapsed(!isCollapsed);
-    };
-
+const Sidebar = () => {
+    const navigate = useNavigate();
     return (
         <>
 
-            <div className={`sidebar ${isCollapsed ? "collapsed" : ""}`}>
-
-                <div className="toggle-button" onClick={toggleSidebar}>
-                    <FontAwesomeIcon icon={isCollapsed ? faBars : faTimes} />
-                </div>
-
+            <div className="sidebar">
                 <div className="sidebar-menu">
                     <div className="sidebar-item">
                         <img style={{ width: "100%" }} src="NTK_logo.png" alt="" />
                     </div>
-                    <Link to="/" className="sidebar-item">
+                    <div className="sidebar-item" onClick={() => navigate("/")}>
                         <FontAwesomeIcon icon={faUser} />
-                        {!isCollapsed && <span>முகப்பு</span>}
-                    </Link>
-                    <Link to="/lists" className="sidebar-item">
+                        <span>முகப்பு</span>
+                    </div>
+                    <div className="sidebar-item" onClick={() => navigate("/lists")}>
                         <FontAwesomeIcon icon={faList} />
-                        {!isCollapsed && <span>பணிகள்</span>}
-                    </Link>
+                        <span>பணிகள்</span>
+                    </div>
                 </div>
             </div>
         </>
