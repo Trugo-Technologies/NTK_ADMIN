@@ -13,7 +13,7 @@ function App() {
     <div className="flex">
       <Sidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
 
-      <div className={`content ${isCollapsed ? "expanded" : ""}`}>
+      <div className={`content-area ${isCollapsed ? "expanded" : ""}`}>
         <Routes>
           <Route path="/" element={<State />} />
           <Route path="/pdf" element={<Pdf />} />

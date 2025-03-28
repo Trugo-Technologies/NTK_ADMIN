@@ -96,7 +96,7 @@ body {
 }
 
 /* Content Area */
-.content {
+.content-area {
     /* background-color: grey; */
     flex: 1;
     padding: 10px;
@@ -106,8 +106,9 @@ body {
 }
 
 /* Adjust when Sidebar is Collapsed */
-.content.expanded {
+.content-area.expanded {
     margin-left: 60px;
+    width: calc(100% - 250px); /* Adjust width accordingly */
 }
 
 /* Dashboard Tabs */
