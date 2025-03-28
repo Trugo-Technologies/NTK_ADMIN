@@ -28,7 +28,7 @@ const PdfScreen = () => {
 
     return (
         <div className="container d-flex flex-column align-items-center py-4">
-            <div className="card border border-secondary shadow-lg" style={{ width: "210mm", height: "297mm", position: "relative" }} ref={contentRef}>
+            <div className="card " style={{ width: "210mm", height: "297mm", position: "relative" }} ref={contentRef}>
                 {/* Header Section */}
                 <div className="w-100" style={{ height: "40mm" }}>
                     <img src="/Header.jpg" alt="Header" className="img-fluid w-100 h-100" style={{ objectFit: "cover" }} crossOrigin="anonymous" />
@@ -36,8 +36,13 @@ const PdfScreen = () => {
 
                 {/* Main Content Section */}
                 <div className="p-4 " >
-                    <h5 className="text-center fw-bold text-dark">அறிவிப்பு:</h5>
-                    <div className="desContent2 d-flex flex-column p-2">
+                    <div className="text-end" style={{ marginRight: "40px", lineHeight: "1.2" }}>
+                        <p className="text-dark" style={{ margin: 0 }}>க.எண் : 733653482 </p>
+                        <p className="text-dark" style={{ margin: 0 }}>நாள் : 25.03.2025</p>
+                    </div>
+
+                    <h5 className="text-center fw-bold text-dark " style={{ marginTop: '40px' }}>அறிவிப்பு:</h5>
+                    <div className="desContent2 d-flex flex-column ">
                         <p className="text-dark  " >
                             சேலம் மாவட்டம், மேட்டூர் தொகுதி, <strong>207</strong>ஆவது வாக்குச்சாவடியில்
                             <strong> சிவானந்தம் வீரபாண்டியன் (18574358150) </strong>, நாம் தமிழர் கட்சி - இரணியூர் பாசறையின் மாபெரும் ஒருங்கிணைப்பாளராக
@@ -54,7 +59,7 @@ const PdfScreen = () => {
                         </p>
                     </div>
                     {/* Signature Section */}
-                    <div className="text-end" style={{marginRight:"20px"}}>
+                    <div className="text-end" style={{ marginRight: "40px" }}>
                         <p className="fw-semibold">சீமான்</p>
                         <p className="text-muted">தலைமை ஒருங்கிணைப்பாளர்</p>
                     </div>

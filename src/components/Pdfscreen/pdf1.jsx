@@ -54,6 +54,11 @@ const PdfScreen1 = () => {
 
                 {/* Main Content Section */}
                 <div className="content " style={{ fontSize: '14px' }}>
+                    <div className="text-end" style={{marginTop:"20px", marginRight: "40px", lineHeight: "1.2" }}>
+                        <p className="text-dark" style={{ margin: 0 }}>க.எண் : 733653482 </p>
+                        <p className="text-dark" style={{ margin: 0 }}>நாள் : 25.03.2025</p>
+                    </div>
+
                     <p className="text-center fw-bold text-dark" style={{ textDecoration: "underline" }}>
                         அறிவிப்பு :
                     </p>
