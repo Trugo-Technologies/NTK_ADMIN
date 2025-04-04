@@ -27,7 +27,7 @@ const LoginScreen = () => {
             const data = await response.json();
 
             if (response.ok) {
-                alert('Login successful');
+               
                 localStorage.setItem('token', data.token); // Store token for authentication
                 navigate('/dashboard'); // Redirect to State page
             } else {

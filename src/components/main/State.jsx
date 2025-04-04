@@ -19,11 +19,7 @@ import Pdf from "../Pdfscreen/pdf";
 const State = () => {
     const navigate = useNavigate();
     const [modalIsOpen, setModalIsOpen] = useState(false);
-    // Hardcoded data for autofill
-    const memberData = [
-        { memberNumber: "1001", fullName: "ஹரி ஹரன் தியாகராஜன்", voteNumber: "123", name: "ஹரி ஹரன்", fatherName: "தியாகராஜன்", image: "Header.jpg" },
-        { memberNumber: "1002", fullName: "கோபிநாத் வசந்தகுமார் ", voteNumber: "124", name: "கோபிநாத்", fatherName: "வசந்தகுமார்", image: "Footer.jpg" }
-    ];
+   
     const [forms, setForms] = useState([{ id: 1, data: {} }]); // Array to store multiple forms
     const [tableForm, setTableForm] = useState([{ id: 1, data: {} }])
 
@@ -47,51 +43,64 @@ const State = () => {
             setTableForm(tableForm.filter((_, i) => i !== index));
         }
     }
+    const fetchMemberData = async (memberNumber) => {
+        try {
+            const response = await fetch(`https://api.naamtamilar.org/api/base/name/${memberNumber}`);
+            if (!response.ok) throw new Error('Data not found');
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Fetch error:', error);
+            return null;
+        }
+    };
 
     // Handle form data change
-    const handleInputChange = (index, field, value, isTableForm = false) => {
+    const handleInputChange = async (index, field, value, isTableForm = false) => {
         console.log(`Field: ${field}, Value: ${value}, isTableForm: ${isTableForm}`);
 
-        if (isTableForm) {
-            setTableForm(prevTableForms => {
-                const updatedTableForms = [...prevTableForms];
+        if (field === "memberNumber") {
+            const memberData = await fetchMemberData(value);
 
-                if (field === "memberNumber") {
-                    const selectedMember = memberData.find(m => m.memberNumber === String(value));
+            const mappedData = memberData
+                ? {
+                    memberNumber: value,
+                    name: memberData.name,
+                    fatherName: memberData.sname,
+                    voteNumber: memberData.boothId,
+                    fullName: `${memberData.name} ${memberData.sname}`,
+                    image: `http://join.naamtamilar.org/${value}.jpg`
 
-                    if (selectedMember) {
-                        // If member is found, update all fields
-                        updatedTableForms[index].data = { ...selectedMember };
-                    } else {
-                        // If no member is found, keep only the entered memberNumber
-                        updatedTableForms[index].data = { memberNumber: value };
-                    }
-                } else {
-                    updatedTableForms[index].data[field] = value;
                 }
+                : { memberNumber: value };
 
-                return updatedTableForms;
-            });
+            if (isTableForm) {
+                setTableForm(prev => {
+                    const updated = [...prev];
+                    updated[index].data = mappedData;
+                    return updated;
+                });
+            } else {
+                setForms(prev => {
+                    const updated = [...prev];
+                    updated[index].data = mappedData;
+                    return updated;
+                });
+            }
         } else {
-            setForms(prevForms => {
-                const updatedForms = [...prevForms];
-
-                if (field === "memberNumber") {
-                    const selectedMember = memberData.find(m => m.memberNumber === String(value));
-                    console.log("Selected Member:", selectedMember);
-
-                    if (selectedMember) {
-                        updatedForms[index].data = { ...selectedMember };
-                    } else {
-                        updatedForms[index].data = { memberNumber: value };
-                    }
-                } else {
-                    updatedForms[index].data[field] = value;
-                }
-
-                console.log("Updated Forms:", updatedForms);
-                return updatedForms;
-            });
+            if (isTableForm) {
+                setTableForm(prev => {
+                    const updated = [...prev];
+                    updated[index].data[field] = value;
+                    return updated;
+                });
+            } else {
+                setForms(prev => {
+                    const updated = [...prev];
+                    updated[index].data[field] = value;
+                    return updated;
+                });
+            }
         }
     };
 
@@ -115,7 +124,7 @@ const State = () => {
                     <span className="fw-bold">புதிய பொறுப்பாளர் தகவல்களின்  எண்ணிக்கை : {forms.length}</span>
 
                     {/* Add Button */}
-                    <Button className="flex-shrink-0" style={{ backgroundColor: "#FAE818", color: "#000", border: "none" }} onClick={addNewForm}>+ Add</Button>
+                    <Button className="flex-shrink-0" style={{ backgroundColor: "#FAE818", color: "#000", border: "none" }} onClick={addNewForm}>+ சேர்க்க</Button>
                 </div>
             </div>
             <div className="scrollable-form">
@@ -241,8 +250,14 @@ const State = () => {
                                                         <Form.Control
                                                             type="text"
                                                             value={form.data.memberNumber || ""}
-                                                            onChange={(e) => handleInputChange(index, "memberNumber", e.target.value, true)}
+                                                            onBlur={(e) => handleInputChange(index, "memberNumber", e.target.value, true)}
+                                                            onChange={(e) => {
+                                                                const updated = [...tableForm];
+                                                                updated[index].data.memberNumber = e.target.value;
+                                                                setTableForm(updated);
+                                                            }}
                                                         />
+
                                                     </td>
                                                     <td>
                                                         <Form.Control
@@ -278,12 +293,33 @@ const State = () => {
                                                                 src={form.data.image}
                                                                 alt="Member"
                                                                 className="img-fluid"
-                                                                style={{ maxWidth: "50px", height: "50px", borderRadius: "50px" }}
+                                                                style={{
+                                                                    width: "50px",
+                                                                    height: "50px",
+                                                                    borderRadius: "50%",
+                                                                    objectFit: "cover",
+                                                                    alignContent:"center"
+                                                                }}
                                                             />
                                                         ) : (
-                                                            <span>தகவல் இல்லை</span>
+                                                            <i
+                                                                className="fa fa-user"
+                                                                style={{
+                                                                    fontSize: "24px",
+                                                                    width: "50px",
+                                                                    height: "50px",
+                                                                    borderRadius: "50%",
+                                                                    display: "flex",
+                                                                    alignContent:"center",
+                                                                    justifyContent: "center",
+                                                                    backgroundColor: "#e0e0e0"
+                                                                }}
+                                                                aria-hidden="true"
+                                                            ></i>
                                                         )}
                                                     </td>
+
+
                                                     {/* <td>
                                                         <Button className="button" style={{ backgroundColor: "#FAE818", color: "#000", border: "none" }} onClick={() => setModalIsOpen(true)}>
                                                             <FontAwesomeIcon icon={faEye} />
@@ -456,7 +492,7 @@ const State = () => {
 
                             {/* Remove Button */}
                             <div className="text-end">
-                                <Button style={{ backgroundColor: "#EE1B24", border: "none", color: "#000" }} onClick={() => removeForm(index)} disabled={forms.length === 1}>
+                                <Button style={{ backgroundColor: "#EE1B24", border: "none", color: "#ffffff" }} onClick={() => removeForm(index)} disabled={forms.length === 1}>
                                     அகற்று
                                 </Button>
                             </div>
