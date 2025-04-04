@@ -61,6 +61,7 @@ const State = () => {
         { memberNumber: "1001", fullName: "ஹரி ஹரன் தியாகராஜன்", voteNumber: "123", name: "ஹரி ஹரன்", fatherName: "தியாகராஜன்", image: "Header.jpg" },
         { memberNumber: "1002", fullName: "கோபிநாத் வசந்தகுமார் ", voteNumber: "124", name: "கோபிநாத்", fatherName: "வசந்தகுமார்", image: "Footer.jpg" }
     ];
+   
     const [forms, setForms] = useState([{ id: 1, data: {} }]); // Array to store multiple forms
     const [tableForm, setTableForm] = useState([{ id: 1, data: {} }])
 
@@ -224,6 +225,125 @@ const State = () => {
                             {/* */}
 
                             {((forms[index].data.party_responsibility_status === "state" || forms[index].data.party_responsibility_status === "zone" || forms[index].data.party_responsibility_status === "party_district")) && (
+                            {(forms[index].data.appointment && (forms[index].data.party_responsibility_status === "state" || forms[index].data.party_responsibility_status === "zone")) && (
+                                <div className="mb-4 p-3 mt-4" style={{ border: "1px solid black", borderRadius: "5px" }}>
+
+                                    {/* First Row: Showing Appointment */}
+                                    <div className="mb-3 col-md-4">
+                                        <Form.Group>
+                                            <Form.Label>தேர்ந்தெடுக்கப்பட்ட
+                                                பொ.நியமனம்</Form.Label>
+                                            <Form.Control
+                                                type="text"
+                                                value={forms[index].data.appointment || ""}
+                                                readOnly
+                                            />
+                                        </Form.Group>
+                                    </div>
+
+                                    {/* Table for Other Details */}
+                                    <table className="table table-bordered text-center">
+                                        <thead className="table-light">
+                                            <tr style={{ width: "100%" }}>
+                                                <th style={{ width: "25%" }}>உறுப்பினர் எண்</th>
+                                                <th style={{ width: "25%" }}>முழுப் பெயர்</th>
+                                                <th style={{ width: "10%" }}>வாக்கக எண்</th>
+                                                <th style={{ width: "15%" }}>பெயர்</th>
+                                                <th style={{ width: "15%" }}>த/க பெயர்</th>
+                                                <th style={{ width: "10%" }}>புகைப்படம்</th>
+                                                {/* <th></th> */}
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {tableForm.map((form, index) => (
+                                                <tr key={index}>
+                                                    <td>
+                                                        <Form.Control
+                                                            type="text"
+                                                            value={form.data.memberNumber || ""}
+                                                            onBlur={(e) => handleInputChange(index, "memberNumber", e.target.value, true)}
+                                                            onChange={(e) => {
+                                                                const updated = [...tableForm];
+                                                                updated[index].data.memberNumber = e.target.value;
+                                                                setTableForm(updated);
+                                                            }}
+                                                        />
+
+                                                    </td>
+                                                    <td>
+                                                        <Form.Control
+                                                            type="text"
+                                                            value={form.data.fullName || ""}
+                                                            onChange={(e) => handleInputChange(index, "fullName", e.target.value, true)}
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <Form.Control
+                                                            type="text"
+                                                            value={form.data.voteNumber || ""}
+                                                            onChange={(e) => handleInputChange(index, "voteNumber", e.target.value, true)}
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <Form.Control
+                                                            type="text"
+                                                            value={form.data.name || ""}
+                                                            readOnly
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <Form.Control
+                                                            type="text"
+                                                            value={form.data.fatherName || ""}
+                                                            readOnly
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        {form.data.image ? (
+                                                            <img
+                                                                src={form.data.image}
+                                                                alt="Member"
+                                                                className="img-fluid"
+                                                                style={{
+                                                                    width: "50px",
+                                                                    height: "50px",
+                                                                    borderRadius: "50%",
+                                                                    objectFit: "cover",
+                                                                    alignContent:"center"
+                                                                }}
+                                                            />
+                                                        ) : (
+                                                            <i
+                                                                className="fa fa-user"
+                                                                style={{
+                                                                    fontSize: "24px",
+                                                                    width: "50px",
+                                                                    height: "50px",
+                                                                    borderRadius: "50%",
+                                                                    display: "flex",
+                                                                    alignContent:"center",
+                                                                    justifyContent: "center",
+                                                                    backgroundColor: "#e0e0e0"
+                                                                }}
+                                                                aria-hidden="true"
+                                                            ></i>
+                                                        )}
+                                                    </td>
+
+
+                                                    {/* <td>
+                                                        <Button className="button" style={{ backgroundColor: "#FAE818", color: "#000", border: "none" }} onClick={() => setModalIsOpen(true)}>
+                                                            <FontAwesomeIcon icon={faEye} />
+                                                        </Button>
+                                                    </td> */}
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            )}
+
+                            {(forms[index].data.appointment && (forms[index].data.party_responsibility_status === "party_district" || forms[index].data.party_responsibility_status === "vol" || forms[index].data.party_responsibility_status === "branch")) && (
                                 <div className="mb-4 p-3 mt-4" style={{ border: "1px solid black" }}>
 
                                     {/* First Row: Showing Appointment */}
