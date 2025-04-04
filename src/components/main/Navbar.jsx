@@ -1,10 +1,13 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { useNavigate } from 'react-router-dom';
 
 const HeaderNavbar = () => {
+    const navigate = useNavigate();
+    
     const handleLogout = () => {
         alert('Logged out successfully');
-
+        navigate('/login');
     };
 
     return (

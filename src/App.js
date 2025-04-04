@@ -1,28 +1,41 @@
-import './App.css';
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { useState } from "react";
-import Pdf from "./components/Pdfscreen/pdf"
-import PdfScreen1 from './components/Pdfscreen/pdf1.jsx';
-import Lists from "./components/main/Lists.jsx";
-import State from "./components/main/State.jsx";
-import Sidebar from "./components/main/sidebar.jsx";
-import Header from "./components/main/Navbar.jsx"
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import LoginScreen from './components/Login.jsx';
+import Dashboard from './components/main/State.jsx';
+import HeaderNavbar from './components/main/Navbar.jsx';
+import Sidebar from './components/main/sidebar.jsx';
+import "../src/style.css";
+
+const Layout = ({ children }) => {
+  const location = useLocation();
+  const isLoginPage = location.pathname === "/login";
+
+  return (
+    <div>
+      {!isLoginPage && <HeaderNavbar />}
+      <div className="d-flex">
+        {!isLoginPage && <Sidebar />}
+        <div className="container-fluid">{children}</div>
+      </div>
+    </div>
+  );
+};
 
 function App() {
   return (
-    <div className="flex">
-      <Sidebar />
-   <Header/>
-      <div className={`content-area`}>
+      <Layout>
         <Routes>
-          
-          <Route path="/" element={<State />} />
-          <Route path="/pdf" element={<Pdf />} />
-          <Route path="/pdf1" element={<PdfScreen1 />} />
-          <Route path="/lists" element={<Lists />} />
+          {/* Redirect "/" to "/login" */}
+          <Route path="/" element={<Navigate to="/login" replace />} />
+
+          {/* Login Page */}
+          <Route path="/login" element={<LoginScreen />} />
+
+          {/* Other pages */}
+          <Route path="/dashboard" element={<Dashboard />} />
+          {/* Add other routes as needed */}
         </Routes>
-      </div>
-    </div>
+      </Layout>
   );
 }
 

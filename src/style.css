@@ -178,9 +178,7 @@ body {
 
 /* Dashboard Tabs */
 .tab-content h4 {
-
     text-align: left;
-   
 }
 
 /* Align Form Labels */
@@ -193,4 +191,19 @@ form label {
 /* Button Alignment */
 .button {
     text-align: right;
+}
+
+.tab-content {
+    margin-top: 50px;
+    margin-left: 250px;
+    padding: 10px;
+}
+.container, .container-fluid, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
+    --bs-gutter-x: 1.5rem;
+    --bs-gutter-y: 0;
+    width: 100%;
+    padding-right: calc(var(--bs-gutter-x)* );
+    padding-left: calc(var(--bs-gutter-x)* );
+    margin-right: auto;
+    margin-left: auto;
 }
