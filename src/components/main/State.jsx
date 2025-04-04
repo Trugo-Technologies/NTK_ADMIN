@@ -46,22 +46,13 @@ const State = () => {
     const [selectedRoles, setSelectedRoles] = useState([]);
 
     const handleDepartmentChange = (index, field, value) => {
-        // Find the selected department from the API data
         const department = departments.find(dept => dept._id.toString() === value);
-
-        // Extract roles or set an empty array if no roles are found
         setSelectedRoles(department ? department.roles : []);
 
-        // Update the form state
         handleInputChange(index, field, value);
     };
 
-    // Hardcoded data for autofill
-    const memberData = [
-        { memberNumber: "1001", fullName: "ஹரி ஹரன் தியாகராஜன்", voteNumber: "123", name: "ஹரி ஹரன்", fatherName: "தியாகராஜன்", image: "Header.jpg" },
-        { memberNumber: "1002", fullName: "கோபிநாத் வசந்தகுமார் ", voteNumber: "124", name: "கோபிநாத்", fatherName: "வசந்தகுமார்", image: "Footer.jpg" }
-    ];
-   
+
     const [forms, setForms] = useState([{ id: 1, data: {} }]); // Array to store multiple forms
     const [tableForm, setTableForm] = useState([{ id: 1, data: {} }])
 
@@ -87,49 +78,63 @@ const State = () => {
     }
 
     // Handle form data change
-    const handleInputChange = (index, field, value, isTableForm = false) => {
-        console.log(`Field: ${field}, Value: ${value}, isTableForm: ${isTableForm}`);
+    const fetchMemberData = async (memberNumber) => {
+        try {
+            const response = await fetch(`https://api.naamtamilar.org/api/base/name/${memberNumber}`);
+            if (!response.ok) throw new Error('Data not found');
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Fetch error:', error);
+            return null;
+        }
+    };
 
-        if (isTableForm) {
-            setTableForm(prevTableForms => {
-                const updatedTableForms = [...prevTableForms];
+    // Handle form data change
+    const handleInputChange = async (index, field, value, isTableForm = false) => {
 
-                if (field === "memberNumber") {
-                    const selectedMember = memberData.find(m => m.memberNumber === String(value));
+        if (field === "memberNumber") {
+            const memberData = await fetchMemberData(value);
 
-                    if (selectedMember) {
-                        // If member is found, update all fields
-                        updatedTableForms[index].data = { ...selectedMember };
-                    } else {
-                        // If no member is found, keep only the entered memberNumber
-                        updatedTableForms[index].data = { memberNumber: value };
-                    }
-                } else {
-                    updatedTableForms[index].data[field] = value;
+            const mappedData = memberData
+                ? {
+                    memberNumber: value,
+                    name: memberData.name,
+                    fatherName: memberData.sname,
+                    voteNumber: memberData.boothId,
+                    fullName: `${memberData.name} ${memberData.sname}`,
+                    image: `http://join.naamtamilar.org/${value}.jpg`
+
                 }
+                : { memberNumber: value };
 
-                return updatedTableForms;
-            });
+            if (isTableForm) {
+                setTableForm(prev => {
+                    const updated = [...prev];
+                    updated[index].data = mappedData;
+                    return updated;
+                });
+            } else {
+                setForms(prev => {
+                    const updated = [...prev];
+                    updated[index].data = mappedData;
+                    return updated;
+                });
+            }
         } else {
-            setForms(prevForms => {
-                const updatedForms = [...prevForms];
-
-                if (field === "memberNumber") {
-                    const selectedMember = memberData.find(m => m.memberNumber === String(value));
-                    console.log("Selected Member:", selectedMember);
-
-                    if (selectedMember) {
-                        updatedForms[index].data = { ...selectedMember };
-                    } else {
-                        updatedForms[index].data = { memberNumber: value };
-                    }
-                } else {
-                    updatedForms[index].data[field] = value;
-                }
-
-                console.log("Updated Forms:", updatedForms);
-                return updatedForms;
-            });
+            if (isTableForm) {
+                setTableForm(prev => {
+                    const updated = [...prev];
+                    updated[index].data[field] = value;
+                    return updated;
+                });
+            } else {
+                setForms(prev => {
+                    const updated = [...prev];
+                    updated[index].data[field] = value;
+                    return updated;
+                });
+            }
         }
     };
 
@@ -161,7 +166,7 @@ const State = () => {
                     {forms.map((form, index) => (
                         <div key={form.id} className="mb-4 border p-3 rounded shadow-sm form-area">
                             {/* First Row */}
-                            {/* <div className="row">
+                            <div className="row">
                                 <div className="col-md-4">
                                     <Form.Group className="mb-3">
                                         <Form.Label>மாவட்டம்</Form.Label>
@@ -189,7 +194,7 @@ const State = () => {
                                         />
                                     </Form.Group>
                                 </div>
-                            </div> */}
+                            </div>
 
                             {/* Second Row */}
                             <div className="row">
@@ -225,38 +230,60 @@ const State = () => {
                             {/* */}
 
                             {((forms[index].data.party_responsibility_status === "state" || forms[index].data.party_responsibility_status === "zone" || forms[index].data.party_responsibility_status === "party_district")) && (
-                            {(forms[index].data.appointment && (forms[index].data.party_responsibility_status === "state" || forms[index].data.party_responsibility_status === "zone")) && (
-                                <div className="mb-4 p-3 mt-4" style={{ border: "1px solid black", borderRadius: "5px" }}>
+                                <div className="mb-4 p-3 mt-4" style={{ border: "1px solid black" }}>
 
                                     {/* First Row: Showing Appointment */}
-                                    <div className="mb-3 col-md-4">
-                                        <Form.Group>
-                                            <Form.Label>தேர்ந்தெடுக்கப்பட்ட
-                                                பொ.நியமனம்</Form.Label>
-                                            <Form.Control
-                                                type="text"
-                                                value={forms[index].data.appointment || ""}
-                                                readOnly
-                                            />
-                                        </Form.Group>
+                                    <div className="row mb-3">
+                                        <div className="col-md-4">
+                                            <Form.Group>
+                                                <Form.Label>தேர்ந்தெடுக்கப்பட்ட பொ.நியமனம்</Form.Label>
+                                                <Form.Control
+                                                    type="text"
+                                                    name="choosen_appointment"
+                                                    value={forms[index].data.appointment || ""}
+                                                    readOnly
+                                                />
+                                            </Form.Group>
+                                        </div>
+
+                                        {/* Add Button Aligned to Right */}
+                                        <div className="col-md-8 d-flex justify-content-end align-items-end">
+                                            <Button className="flex-shrink-0" style={{ backgroundColor: "#FAE818", color: "#000", border: "none" }} onClick={addNewTableForm}>
+                                                <b>+</b>
+                                            </Button>
+                                        </div>
                                     </div>
 
                                     {/* Table for Other Details */}
                                     <table className="table table-bordered text-center">
                                         <thead className="table-light">
                                             <tr style={{ width: "100%" }}>
-                                                <th style={{ width: "25%" }}>உறுப்பினர் எண்</th>
-                                                <th style={{ width: "25%" }}>முழுப் பெயர்</th>
+                                                <th style={{ width: "20%" }}>பொறுப்பு</th>
+                                                <th style={{ width: "20%" }}>உறுப்பினர் எண்</th>
+                                                <th style={{ width: "20%" }}>முழுப் பெயர்</th>
                                                 <th style={{ width: "10%" }}>வாக்கக எண்</th>
                                                 <th style={{ width: "15%" }}>பெயர்</th>
                                                 <th style={{ width: "15%" }}>த/க பெயர்</th>
                                                 <th style={{ width: "10%" }}>புகைப்படம்</th>
-                                                {/* <th></th> */}
+                                                <th></th>
                                             </tr>
                                         </thead>
-                                        <tbody>
-                                            {tableForm.map((form, index) => (
-                                                <tr key={index}>
+                                        {tableForm.map((form, index) => (
+                                            <tbody key={index}>
+                                                <tr>
+                                                    <td>
+                                                        <Form.Select
+                                                            value={form.data?.role || ""}
+                                                            onChange={(e) => handleInputChange(index, "role", e.target.value)}
+                                                        >
+                                                            <option>தேர்ந்தெடு</option>
+                                                            {selectedRoles.map((role) => (
+                                                                <option key={role.id} value={role.id}>
+                                                                    {role.name}
+                                                                </option>
+                                                            ))}
+                                                        </Form.Select>
+                                                    </td>
                                                     <td>
                                                         <Form.Control
                                                             type="text"
@@ -309,7 +336,7 @@ const State = () => {
                                                                     height: "50px",
                                                                     borderRadius: "50%",
                                                                     objectFit: "cover",
-                                                                    alignContent:"center"
+                                                                    alignContent: "center"
                                                                 }}
                                                             />
                                                         ) : (
@@ -321,7 +348,7 @@ const State = () => {
                                                                     height: "50px",
                                                                     borderRadius: "50%",
                                                                     display: "flex",
-                                                                    alignContent:"center",
+                                                                    alignContent: "center",
                                                                     justifyContent: "center",
                                                                     backgroundColor: "#e0e0e0"
                                                                 }}
@@ -330,88 +357,6 @@ const State = () => {
                                                         )}
                                                     </td>
 
-
-                                                    {/* <td>
-                                                        <Button className="button" style={{ backgroundColor: "#FAE818", color: "#000", border: "none" }} onClick={() => setModalIsOpen(true)}>
-                                                            <FontAwesomeIcon icon={faEye} />
-                                                        </Button>
-                                                    </td> */}
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            )}
-
-                            {(forms[index].data.appointment && (forms[index].data.party_responsibility_status === "party_district" || forms[index].data.party_responsibility_status === "vol" || forms[index].data.party_responsibility_status === "branch")) && (
-                                <div className="mb-4 p-3 mt-4" style={{ border: "1px solid black" }}>
-
-                                    {/* First Row: Showing Appointment */}
-                                    <div className="row mb-3">
-                                        <div className="col-md-4">
-                                            <Form.Group>
-                                                <Form.Label>தேர்ந்தெடுக்கப்பட்ட பொ.நியமனம்</Form.Label>
-                                                <Form.Control
-                                                    type="text"
-                                                    name="choosen_appointment"
-                                                    value={forms[index].data.appointment || ""}
-                                                    readOnly
-                                                />
-                                            </Form.Group>
-                                        </div>
-
-                                        {/* Add Button Aligned to Right */}
-                                        <div className="col-md-8 d-flex justify-content-end align-items-end">
-                                            <Button className="flex-shrink-0" style={{ backgroundColor: "#FAE818", color: "#000", border: "none" }} onClick={addNewTableForm}>
-                                                <b>+</b>
-                                            </Button>
-                                        </div>
-                                    </div>
-
-                                    {/* Table for Other Details */}
-                                    <table className="table table-bordered text-center">
-                                        <thead className="table-light">
-                                            <tr style={{ width: "100%" }}>
-                                                <th style={{ width: "20%" }}>பொறுப்பு</th>
-                                                <th style={{ width: "20%" }}>உறுப்பினர் எண்</th>
-                                                <th style={{ width: "20%" }}>முழுப் பெயர்</th>
-                                                <th style={{ width: "10%" }}>வாக்கக எண்</th>
-                                                <th style={{ width: "15%" }}>பெயர்</th>
-                                                <th style={{ width: "15%" }}>த/க பெயர்</th>
-                                                <th style={{ width: "10%" }}>புகைப்படம்</th>
-                                                <th></th>
-                                            </tr>
-                                        </thead>
-                                        {tableForm.map((form, index) => (
-                                            <tbody key={index}>
-                                                <tr>
-                                                    <td>
-                                                    <Form.Select
-                                                            value={form.data?.appointment || ""}
-                                                            onChange={(e) => handleInputChange(index, "role", e.target.value)}
-                                                        >
-                                                            <option>தேர்ந்தெடு</option>
-                                                            {selectedRoles.map((role) => (
-                                                                <option key={role.id} value={role.id}>
-                                                                    {role.name}
-                                                                </option>
-                                                            ))}
-                                                        </Form.Select>
-                                                    </td>
-                                                    <td><Form.Control type="text" /></td>
-                                                    <td><Form.Control type="text" /></td>
-                                                    <td><Form.Control type="text" /></td>
-                                                    <td><Form.Control type="text" readOnly /></td>
-                                                    <td><Form.Control type="text" readOnly /></td>
-                                                    <td>
-                                                        <img
-                                                            src="Header.jpg"
-                                                            alt="Description"
-                                                            className="img-fluid"
-                                                            style={{ maxWidth: "50px", height: "50px", borderRadius: "50px" }}
-                                                            readOnly
-                                                        />
-                                                    </td>
                                                     <td>
                                                         <FontAwesomeIcon
                                                             style={{
