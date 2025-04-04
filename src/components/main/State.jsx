@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Modal from "react-modal";
 import Form from "react-bootstrap/Form";
@@ -15,10 +15,47 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import "../../style.css";
 import Pdf from "../Pdfscreen/pdf";
+import axios from "axios";
 
 const State = () => {
     const navigate = useNavigate();
     const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [departments, setDepartments] = useState([]);
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtaWQiOiJBZG1pbkhEIiwiaWF0IjoxNzQzNzQ3MzQ5LCJleHAiOjE3NDQwMDY1NDl9.bjMMr_BUafxUyg5921lxBvjWl0ZtMNqtxdCgq8T90Jg"; // Replace with the actual token
+
+    useEffect(() => {
+        const fetchDepartments = async () => {
+            try {
+                const response = await axios.get(
+                    "https://api.naamtamilar.org/api/member/department/list",
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`, // Sending token in the header
+                        },
+                    }
+                );
+                setDepartments(response.data);
+            } catch (error) {
+                console.error("Error fetching departments:", error);
+            }
+        };
+
+        fetchDepartments();
+    }, []);
+
+    const [selectedRoles, setSelectedRoles] = useState([]);
+
+    const handleDepartmentChange = (index, field, value) => {
+        // Find the selected department from the API data
+        const department = departments.find(dept => dept._id.toString() === value);
+
+        // Extract roles or set an empty array if no roles are found
+        setSelectedRoles(department ? department.roles : []);
+
+        // Update the form state
+        handleInputChange(index, field, value);
+    };
+
     // Hardcoded data for autofill
     const memberData = [
         { memberNumber: "1001", fullName: "ஹரி ஹரன் தியாகராஜன்", voteNumber: "123", name: "ஹரி ஹரன்", fatherName: "தியாகராஜன்", image: "Header.jpg" },
@@ -123,7 +160,7 @@ const State = () => {
                     {forms.map((form, index) => (
                         <div key={form.id} className="mb-4 border p-3 rounded shadow-sm form-area">
                             {/* First Row */}
-                            <div className="row">
+                            {/* <div className="row">
                                 <div className="col-md-4">
                                     <Form.Group className="mb-3">
                                         <Form.Label>மாவட்டம்</Form.Label>
@@ -151,7 +188,7 @@ const State = () => {
                                         />
                                     </Form.Group>
                                 </div>
-                            </div>
+                            </div> */}
 
                             {/* Second Row */}
                             <div className="row">
@@ -171,132 +208,22 @@ const State = () => {
                                 <div className="col-md-4">
                                     <Form.Group className="mb-3">
                                         <Form.Label>பொறுப்பு</Form.Label>
-                                        <Form.Select onChange={(e) => handleInputChange(index, "responsibility", e.target.value)}>
+                                        <Form.Select onChange={(e) => handleDepartmentChange(index, "responsibility", e.target.value)}>
                                             <option>தேர்ந்தெடு</option>
-                                            <option value="party">கட்சி</option>
-                                            <option value="pasarai">பாசறை</option>
-                                        </Form.Select>
-                                    </Form.Group>
-                                </div>
-                                <div className="col-md-4">
-                                    <Form.Group className="mb-3">
-                                        <Form.Label>பொறுப்பு நியமனம்</Form.Label>
-                                        <Form.Select value={forms[index].data.appointment || ""} onChange={(e) => handleInputChange(index, "appointment", e.target.value)}>
-                                            <option value="">தேர்ந்தெடு</option>
-
-                                            {/* Show only if "responsibility" is "party" */}
-                                            {forms[index].data.responsibility === "party" && (
-                                                <>
-                                                    <option value="மாநில ஒருங்கிணைப்பாளர்">மாநில ஒருங்கிணைப்பாளர்</option>
-                                                    {/* <option value="district-leader">மாவட்ட தலைவர்</option> */}
-                                                </>
-                                            )}
-
-                                            {/* Show only if "responsibility" is "pasarai" */}
-                                            {forms[index].data.responsibility === "pasarai" && (
-                                                <>
-                                                    <option value="பாசறை மாநில ஒருங்கிணைப்பாளர்">பாசறை மாநில ஒருங்கிணைப்பாளர்</option>
-                                                    <option value="மாவட்ட மாநில ஒருங்கிணைப்பாளர்">மாவட்ட மாநில ஒருங்கிணைப்பாளர்</option>
-                                                </>
-                                            )}
+                                            {departments.map((dept) => (
+                                                <option key={dept._id} value={dept._id}>
+                                                    {dept.name}
+                                                </option>
+                                            ))}
                                         </Form.Select>
                                     </Form.Group>
                                 </div>
                             </div>
 
                             {/* Input Field to Show Selected Value */}
-                            {(forms[index].data.appointment && (forms[index].data.party_responsibility_status === "state" || forms[index].data.party_responsibility_status === "zone")) && (
-                                <div className="mb-4 p-3 mt-4" style={{ border: "1px solid black", borderRadius: "5px" }}>
+                            {/* */}
 
-                                    {/* First Row: Showing Appointment */}
-                                    <div className="mb-3 col-md-4">
-                                        <Form.Group>
-                                            <Form.Label>தேர்ந்தெடுக்கப்பட்ட
-                                                பொ.நியமனம்</Form.Label>
-                                            <Form.Control
-                                                type="text"
-                                                value={forms[index].data.appointment || ""}
-                                                readOnly
-                                            />
-                                        </Form.Group>
-                                    </div>
-
-                                    {/* Table for Other Details */}
-                                    <table className="table table-bordered text-center">
-                                        <thead className="table-light">
-                                            <tr style={{ width: "100%" }}>
-                                                <th style={{ width: "25%" }}>உறுப்பினர் எண்</th>
-                                                <th style={{ width: "25%" }}>முழுப் பெயர்</th>
-                                                <th style={{ width: "10%" }}>வாக்கக எண்</th>
-                                                <th style={{ width: "15%" }}>பெயர்</th>
-                                                <th style={{ width: "15%" }}>த/க பெயர்</th>
-                                                <th style={{ width: "10%" }}>புகைப்படம்</th>
-                                                {/* <th></th> */}
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {tableForm.map((form, index) => (
-                                                <tr key={index}>
-                                                    <td>
-                                                        <Form.Control
-                                                            type="text"
-                                                            value={form.data.memberNumber || ""}
-                                                            onChange={(e) => handleInputChange(index, "memberNumber", e.target.value, true)}
-                                                        />
-                                                    </td>
-                                                    <td>
-                                                        <Form.Control
-                                                            type="text"
-                                                            value={form.data.fullName || ""}
-                                                            onChange={(e) => handleInputChange(index, "fullName", e.target.value, true)}
-                                                        />
-                                                    </td>
-                                                    <td>
-                                                        <Form.Control
-                                                            type="text"
-                                                            value={form.data.voteNumber || ""}
-                                                            onChange={(e) => handleInputChange(index, "voteNumber", e.target.value, true)}
-                                                        />
-                                                    </td>
-                                                    <td>
-                                                        <Form.Control
-                                                            type="text"
-                                                            value={form.data.name || ""}
-                                                            readOnly
-                                                        />
-                                                    </td>
-                                                    <td>
-                                                        <Form.Control
-                                                            type="text"
-                                                            value={form.data.fatherName || ""}
-                                                            readOnly
-                                                        />
-                                                    </td>
-                                                    <td>
-                                                        {form.data.image ? (
-                                                            <img
-                                                                src={form.data.image}
-                                                                alt="Member"
-                                                                className="img-fluid"
-                                                                style={{ maxWidth: "50px", height: "50px", borderRadius: "50px" }}
-                                                            />
-                                                        ) : (
-                                                            <span>தகவல் இல்லை</span>
-                                                        )}
-                                                    </td>
-                                                    {/* <td>
-                                                        <Button className="button" style={{ backgroundColor: "#FAE818", color: "#000", border: "none" }} onClick={() => setModalIsOpen(true)}>
-                                                            <FontAwesomeIcon icon={faEye} />
-                                                        </Button>
-                                                    </td> */}
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            )}
-
-                            {(forms[index].data.appointment && (forms[index].data.party_responsibility_status === "party_district" || forms[index].data.party_responsibility_status === "vol" || forms[index].data.party_responsibility_status === "branch")) && (
+                            {((forms[index].data.party_responsibility_status === "state" || forms[index].data.party_responsibility_status === "zone" || forms[index].data.party_responsibility_status === "party_district")) && (
                                 <div className="mb-4 p-3 mt-4" style={{ border: "1px solid black" }}>
 
                                     {/* First Row: Showing Appointment */}
@@ -339,41 +266,16 @@ const State = () => {
                                             <tbody key={index}>
                                                 <tr>
                                                     <td>
-                                                        <Form.Select
+                                                    <Form.Select
                                                             value={form.data?.appointment || ""}
                                                             onChange={(e) => handleInputChange(index, "role", e.target.value)}
                                                         >
                                                             <option>தேர்ந்தெடு</option>
-
-                                                            {forms[index]?.data?.party_responsibility_status === "party_district" && forms[index]?.data?.responsibility === "party" && (
-                                                                <>
-                                                                    <option value="party">தலைவர்</option>
-                                                                    <option value="pasarai">செயலாளர்</option>
-                                                                    <option value="pasarai">பொருளாளர்</option>
-                                                                    <option value="pasarai">செய்தித் தொடர்பாளர்</option>
-                                                                </>
-                                                            )}
-
-                                                            {forms[index]?.data?.party_responsibility_status === "vol" && forms[index]?.data?.responsibility === "party" && (
-                                                                <>
-                                                                    <option value="party">தலைவர்</option>
-                                                                    <option value="pasarai">இணைத்தலைவர்</option>
-                                                                    <option value="pasarai">துணைத்தலைவர்</option>
-                                                                    <option value="pasarai">செயலாளர்</option>
-                                                                    <option value="pasarai">இணைச் செயலாளர்</option>
-                                                                    <option value="pasarai">துணைச் செயலாளர்</option>
-                                                                    <option value="pasarai">பொருளாளர்</option>
-                                                                    <option value="pasarai">செய்தித் தொடர்பாளர்</option>
-                                                                </>
-                                                            )}
-
-                                                            {(forms[index]?.data?.party_responsibility_status === "vol" || forms[index]?.data?.party_responsibility_status === "party_district") && forms[index]?.data?.responsibility === "pasarai" && (
-                                                                <>
-                                                                    <option value="pasarai">செயலாளர்</option>
-                                                                    <option value="pasarai">இணைச் செயலாளர்</option>
-                                                                    <option value="pasarai">துணைச் செயலாளர்</option>
-                                                                </>
-                                                            )}
+                                                            {selectedRoles.map((role) => (
+                                                                <option key={role.id} value={role.id}>
+                                                                    {role.name}
+                                                                </option>
+                                                            ))}
                                                         </Form.Select>
                                                     </td>
                                                     <td><Form.Control type="text" /></td>

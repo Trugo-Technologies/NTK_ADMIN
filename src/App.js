@@ -5,6 +5,8 @@ import Dashboard from './components/main/State.jsx';
 import HeaderNavbar from './components/main/Navbar.jsx';
 import Sidebar from './components/main/sidebar.jsx';
 import "../src/style.css";
+import Pdf from "./components/Pdfscreen/pdf.jsx";
+import PdfScreen from './components/Pdfscreen/pdf1.jsx';
 
 const Layout = ({ children }) => {
   const location = useLocation();
@@ -34,6 +36,8 @@ function App() {
           {/* Other pages */}
           <Route path="/dashboard" element={<Dashboard />} />
           {/* Add other routes as needed */}
+          <Route path="/pdf" element={<Pdf />} />
+          <Route path="/pdf1" element={<PdfScreen />} />
         </Routes>
       </Layout>
   );
