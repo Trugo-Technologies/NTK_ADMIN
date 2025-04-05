@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Modal from "react-modal";
+import { Spinner } from "react-bootstrap";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -21,6 +22,8 @@ const State = () => {
     const navigate = useNavigate();
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [departments, setDepartments] = useState([]);
+    const [district, setDistricts] = useState([]);
+    const [constituency, setConstituency] = useState([]);
     const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtaWQiOiJBZG1pbkhEIiwiaWF0IjoxNzQzNzQ3MzQ5LCJleHAiOjE3NDQwMDY1NDl9.bjMMr_BUafxUyg5921lxBvjWl0ZtMNqtxdCgq8T90Jg"; // Replace with the actual token
 
     useEffect(() => {
@@ -41,17 +44,87 @@ const State = () => {
         };
 
         fetchDepartments();
+
+        const fetchDistrict = async () => {
+            try {
+                const response = await axios.get(
+                    "https://api.naamtamilar.org/api/location/district/list/5ae6c7deab123c41f43bb368",
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`, // Sending token in the header
+                        },
+                    }
+                );
+                setDistricts(response.data);
+            } catch (error) {
+                console.error("Error fetching departments:", error);
+            }
+        };
+
+        fetchDistrict();
+
+        const fetchConstituency = async () => {
+            try {
+                const response = await axios.get(
+                    "https://api.naamtamilar.org/api/location/arealist/hlevel/5ae5f4aeab123c41f43bb349",
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`, // Sending token in the header
+                        },
+                    }
+                );
+                setConstituency(response.data);
+            } catch (error) {
+                console.error("Error fetching departments:", error);
+            }
+        };
+
+        fetchConstituency();
     }, []);
 
     const [selectedRoles, setSelectedRoles] = useState([]);
 
     const handleDepartmentChange = (index, field, value) => {
         const department = departments.find(dept => dept._id.toString() === value);
+
+        // Set roles for selected department
         setSelectedRoles(department ? department.roles : []);
 
+        // First update the selected responsibility ID
         handleInputChange(index, field, value);
+
+        // Then update the department name (as appointment) separately
+        if (department) {
+            handleInputChange(index, "appointment", department.name);
+        } else {
+            handleInputChange(index, "appointment", "");
+        }
     };
 
+    const [zones, setZones] = useState([]);
+
+    const handleDistrictChange = async (index, field, value) => {
+        const selectedDistrict = district.find(dis => dis._id.toString() === value);
+
+        // Save district ID
+        handleInputChange(index, field, value);
+
+        // Save district name
+        handleInputChange(index, "zone_name", selectedDistrict?.name || "");
+
+        // 🔥 Fetch zones from API
+        try {
+            const response = await axios.get(`https://api.naamtamilar.org/api/location/district/constituency/list/${value}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            setZones(response.data); // Set zones into state
+        } catch (error) {
+            console.error("Error fetching zones:", error);
+            setZones([]); // Clear if failed
+        }
+    };
 
     const [forms, setForms] = useState([{ id: 1, data: {} }]); // Array to store multiple forms
     const [tableForm, setTableForm] = useState([{ id: 1, data: {} }])
@@ -92,10 +165,26 @@ const State = () => {
 
     // Handle form data change
     const handleInputChange = async (index, field, value, isTableForm = false) => {
-
         if (field === "memberNumber") {
+            // Set loading state
+            if (isTableForm) {
+                setTableForm(prev => {
+                    const updated = [...prev];
+                    updated[index].loading = true;
+                    return updated;
+                });
+            } else {
+                setForms(prev => {
+                    const updated = [...prev];
+                    updated[index].loading = true;
+                    return updated;
+                });
+            }
+
+            // Fetch member data
             const memberData = await fetchMemberData(value);
 
+            // Map data
             const mappedData = memberData
                 ? {
                     memberNumber: value,
@@ -104,20 +193,28 @@ const State = () => {
                     voteNumber: memberData.boothId,
                     fullName: `${memberData.name} ${memberData.sname}`,
                     image: `http://join.naamtamilar.org/${value}.jpg`
-
                 }
                 : { memberNumber: value };
 
+            // 🔥 Merge the mapped data into existing data
             if (isTableForm) {
                 setTableForm(prev => {
                     const updated = [...prev];
-                    updated[index].data = mappedData;
+                    updated[index].data = {
+                        ...updated[index].data,
+                        ...mappedData
+                    };
+                    updated[index].loading = false;
                     return updated;
                 });
             } else {
                 setForms(prev => {
                     const updated = [...prev];
-                    updated[index].data = mappedData;
+                    updated[index].data = {
+                        ...updated[index].data,
+                        ...mappedData
+                    };
+                    updated[index].loading = false;
                     return updated;
                 });
             }
@@ -141,8 +238,8 @@ const State = () => {
     // Handle form submission
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log("Submitted Data:", forms);
-        alert("Form data submitted! Check console.");
+        console.log("Submitted Data:", forms.map((item) => item.data));
+        console.log("Submitted Table Data:", tableForm.map((item) => item.data));
     };
 
     return (
@@ -166,37 +263,6 @@ const State = () => {
                     {forms.map((form, index) => (
                         <div key={form.id} className="mb-4 border p-3 rounded shadow-sm form-area">
                             {/* First Row */}
-                            <div className="row">
-                                <div className="col-md-4">
-                                    <Form.Group className="mb-3">
-                                        <Form.Label>மாவட்டம்</Form.Label>
-                                        <Form.Control
-                                            type="text"
-                                            onChange={(e) => handleInputChange(index, "district", e.target.value)}
-                                        />
-                                    </Form.Group>
-                                </div>
-                                <div className="col-md-4">
-                                    <Form.Group className="mb-3">
-                                        <Form.Label>தொகுதி</Form.Label>
-                                        <Form.Control
-                                            type="text"
-                                            onChange={(e) => handleInputChange(index, "zone", e.target.value)}
-                                        />
-                                    </Form.Group>
-                                </div>
-                                <div className="col-md-4">
-                                    <Form.Group className="mb-3">
-                                        <Form.Label>வாக்கக எண்</Form.Label>
-                                        <Form.Control
-                                            type="number"
-                                            onChange={(e) => handleInputChange(index, "number", e.target.value)}
-                                        />
-                                    </Form.Group>
-                                </div>
-                            </div>
-
-                            {/* Second Row */}
                             <div className="row">
                                 <div className="col-md-4">
                                     <Form.Group className="mb-3">
@@ -225,6 +291,124 @@ const State = () => {
                                     </Form.Group>
                                 </div>
                             </div>
+
+                            {((forms[index].data.party_responsibility_status === "state")) && (
+                                <div className="row">
+                                    <div className="col-md-4">
+                                        <Form.Group className="mb-3">
+                                            <Form.Label>மாவட்டம்</Form.Label>
+                                            <Form.Select onChange={(e) => handleDistrictChange(index, "district", e.target.value)}>
+                                                <option>தேர்ந்தெடு</option>
+                                                {district.map((dis) => (
+                                                    <option key={dis._id} value={dis._id}>
+                                                        {dis.name}
+                                                    </option>
+                                                ))}
+                                            </Form.Select>
+                                        </Form.Group>
+                                    </div>
+                                    <div className="col-md-4">
+                                        <Form.Group className="mb-3">
+                                            <Form.Label>தொகுதி</Form.Label>
+                                            <Form.Select
+                                                onChange={(e) => handleInputChange(index, "zone", e.target.value)}
+                                                value={forms[index]?.data?.zone || ""}
+                                            >
+                                                <option>தேர்ந்தெடு</option>
+                                                {zones.map((zone) => (
+                                                    <option key={zone._id} value={zone._id}>
+                                                        {zone.name}
+                                                    </option>
+                                                ))}
+                                            </Form.Select>
+                                        </Form.Group>
+                                    </div>
+                                    <div className="col-md-4">
+                                        <Form.Group className="mb-3">
+                                            <Form.Label>வாக்கக எண்</Form.Label>
+                                            <Form.Control
+                                                type="number"
+                                                onChange={(e) => handleInputChange(index, "number", e.target.value)}
+                                            />
+                                        </Form.Group>
+                                    </div>
+                                </div>
+                            )}
+
+                            {((forms[index].data.party_responsibility_status === "zone")) && (
+                                <div className="row">
+                                    <div className="col-md-4">
+                                        <Form.Group className="mb-3">
+                                            <Form.Label>மாவட்டம்</Form.Label>
+                                            <Form.Select onChange={(e) => handleInputChange(index, "district", e.target.value)}>
+                                                <option>தேர்ந்தெடு</option>
+                                                {district.map((dis) => (
+                                                    <option key={dis._id} value={dis._id}>
+                                                        {dis.name}
+                                                    </option>
+                                                ))}
+                                            </Form.Select>
+                                        </Form.Group>
+                                    </div>
+                                    <div className="col-md-4">
+                                        <Form.Group className="mb-3">
+                                            <Form.Label>தொகுதி</Form.Label>
+                                            <Form.Select
+                                                onChange={(e) => handleInputChange(index, "zone", e.target.value)}
+                                                value={forms[index]?.data?.zone || ""}
+                                            >
+                                                <option>தேர்ந்தெடு</option>
+                                                {constituency.map((cons) => (
+                                                    <option key={cons._id} value={cons._id}>
+                                                        {cons.name}
+                                                    </option>
+                                                ))}
+                                            </Form.Select>
+                                        </Form.Group>
+                                    </div>
+                                    <div className="col-md-4">
+                                        <Form.Group className="mb-3">
+                                            <Form.Label>வாக்கக எண்</Form.Label>
+                                            <Form.Control
+                                                type="number"
+                                                onChange={(e) => handleInputChange(index, "number", e.target.value)}
+                                            />
+                                        </Form.Group>
+                                    </div>
+                                </div>
+                            )}
+
+                            {((forms[index].data.party_responsibility_status === "party_district")) && (
+                                <div className="row">
+                                    <div className="col-md-4">
+                                        <Form.Group className="mb-3">
+                                            <Form.Label>மாவட்டம்</Form.Label>
+                                            <Form.Control
+                                                type="text"
+                                                onChange={(e) => handleInputChange(index, "district", e.target.value)}
+                                            />
+                                        </Form.Group>
+                                    </div>
+                                    <div className="col-md-4">
+                                        <Form.Group className="mb-3">
+                                            <Form.Label>தொகுதி</Form.Label>
+                                            <Form.Control
+                                                type="text"
+                                                onChange={(e) => handleInputChange(index, "zone", e.target.value)}
+                                            />
+                                        </Form.Group>
+                                    </div>
+                                    <div className="col-md-4">
+                                        <Form.Group className="mb-3">
+                                            <Form.Label>வாக்கக எண்</Form.Label>
+                                            <Form.Control
+                                                type="number"
+                                                onChange={(e) => handleInputChange(index, "number", e.target.value)}
+                                            />
+                                        </Form.Group>
+                                    </div>
+                                </div>
+                            )}
 
                             {/* Input Field to Show Selected Value */}
                             {/* */}
@@ -272,11 +456,8 @@ const State = () => {
                                             <tbody key={index}>
                                                 <tr>
                                                     <td>
-                                                        <Form.Select
-                                                            value={form.data?.role || ""}
-                                                            onChange={(e) => handleInputChange(index, "role", e.target.value)}
-                                                        >
-                                                            <option>தேர்ந்தெடு</option>
+                                                        <Form.Select onChange={(e) => handleInputChange(index, "roleId", e.target.value, true)}>
+                                                            <option value="">தேர்ந்தெடு</option>
                                                             {selectedRoles.map((role) => (
                                                                 <option key={role.id} value={role.id}>
                                                                     {role.name}
@@ -285,16 +466,22 @@ const State = () => {
                                                         </Form.Select>
                                                     </td>
                                                     <td>
-                                                        <Form.Control
-                                                            type="text"
-                                                            value={form.data.memberNumber || ""}
-                                                            onBlur={(e) => handleInputChange(index, "memberNumber", e.target.value, true)}
-                                                            onChange={(e) => {
-                                                                const updated = [...tableForm];
-                                                                updated[index].data.memberNumber = e.target.value;
-                                                                setTableForm(updated);
-                                                            }}
-                                                        />
+                                                        <Form.Group>
+                                                            <Form.Control
+                                                                type="text"
+                                                                value={form.data.memberNumber || ""}
+                                                                onBlur={(e) => handleInputChange(index, "memberNumber", e.target.value, true)}
+                                                                onChange={(e) => {
+                                                                    const updated = [...tableForm];
+                                                                    updated[index].data.memberNumber = e.target.value;
+                                                                    setTableForm(updated);
+                                                                }}
+                                                            />
+                                                            {tableForm[index]?.loading && (
+                                                                <Spinner animation="border" size="sm" />
+                                                            )}
+                                                        </Form.Group>
+
 
                                                     </td>
                                                     <td>
@@ -416,7 +603,7 @@ const State = () => {
                                         Close
                                     </button>
                                     <div style={{ overflowY: "auto", maxHeight: "70vh", paddingRight: "10px" }}>
-                                        <Pdf />
+                                        <Pdf formData={forms} tableData={tableForm.map(item => item.data)} />
                                     </div>
                                 </div>
                             </Modal>
@@ -435,7 +622,7 @@ const State = () => {
                         <Button className="button" style={{ backgroundColor: "#FAE818", color: "#000", border: "none" }} onClick={() => setModalIsOpen(true)}>
                             <FontAwesomeIcon icon={faEye} />
                         </Button>
-                        <Button className="button" style={{ backgroundColor: "#FAE818", color: "#000", border: "none", marginLeft: "20px" }} type="submit">
+                        <Button type="submit" className="button" style={{ backgroundColor: "#FAE818", color: "#000", border: "none", marginLeft: "20px" }}>
                             <b>சேமி</b>
                         </Button>
                     </div>

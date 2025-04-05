@@ -4,31 +4,31 @@ import html2canvas from "html2canvas";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useReactToPrint } from "react-to-print";
 
-const PdfScreen = () => {
+const PdfScreen = ({ formData, tableData }) => {
     const contentRef = useRef(null);
     const reactToPrintFn = useReactToPrint({ contentRef });
 
     const generatePDF = () => {
         const input = contentRef.current;
-    
+
         html2canvas(input, { scale: 3, useCORS: true, logging: false })
             .then((canvas) => {
                 const imgData = canvas.toDataURL("image/png");
                 const pdf = new jsPDF("p", "mm", "a4", true); // 'true' for better quality
-    
+
                 const pageWidth = 210; // A4 width in mm
                 const pageHeight = 297; // A4 height in mm
                 const imgWidth = pageWidth;
                 const imgHeight = (canvas.height * imgWidth) / canvas.width;
-    
+
                 // Add the image without any margin
                 pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
                 pdf.save("Election_Report.pdf");
             })
             .catch((error) => console.error("Error generating PDF:", error));
     };
-    
-    
+
+
 
     return (
         <div className="container d-flex flex-column align-items-center py-4">
@@ -48,8 +48,8 @@ const PdfScreen = () => {
                     <h5 className="text-center fw-bold text-dark " style={{ marginTop: '40px' }}>அறிவிப்பு:</h5>
                     <div className="desContent2 d-flex flex-column ">
                         <p className="text-dark  " >
-                            சேலம் மாவட்டம், மேட்டூர் தொகுதி, <strong>207</strong>ஆவது வாக்குச்சாவடியில்
-                            <strong> சிவானந்தம் வீரபாண்டியன் (18574358150) </strong>, நாம் தமிழர் கட்சி - இரணியூர் பாசறையின் மாபெரும் ஒருங்கிணைப்பாளராக
+                            சேலம் மாவட்டம், மேட்டூர் தொகுதி, <strong>{formData?.district || '___'}</strong>ஆவது வாக்குச்சாவடியில்
+                            <strong> {formData?.name || 'பயனர் பெயர்'} ({formData?.voterId || 'ID'}) </strong>, நாம் தமிழர் கட்சி - {formData?.division || '___'} பாசறையின் மாபெரும் ஒருங்கிணைப்பாளராக
                             ஒருமனதாக நியமிக்கப்படுகிறார்.
                         </p>
                         <p className="text-dark">
