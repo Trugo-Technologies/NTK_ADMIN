@@ -1,7 +1,7 @@
 body {
   margin: 0;
-  font-family: 'Uni Ila-Sundaram-07', sans-serif;
- 
+  font-family: url('../public/fonts/UniIla.Sundaram-07.ttf');
+  font-size: 13px;
 }
 
 code {
@@ -12,10 +12,17 @@ code {
 
 
 @media print {
-  
+
   @page {
-    size: A4; /* Standard page size */
-    margin: 0; /* Remove all margins to eliminate white space */
+    size: A4;
+    /* Standard page size */
+    margin: 0;
+    /* Remove all margins to eliminate white space */
+  }
+
+  body {
+    font-family: url('../public/fonts/UniIla.Sundaram-07.ttf');
+    font-size: 13px;
   }
 
   .printcontent {
@@ -39,29 +46,37 @@ code {
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 20mm; 
+    height: 20mm;
     background: white;
     text-align: center;
     z-index: 10;
-   
+
   }
 
   /* Adjust content so it doesn't overlap with header/footer */
   .content {
-    margin: 50mm 10mm 30mm 10mm; 
+    margin: 50mm 10mm 30mm 10mm;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Uni Ila-Sundaram-07';
+    font-family: url('../public/fonts/UniIla.Sundaram-07.ttf');
+    font-size: 13px;
   }
 
-  
+  .container {
+    font-family: url('../public/fonts/UniIla.Sundaram-07.ttf');
+    font-size: 13px;
+  }
+
+
   .pagecontent2 {
-    page-break-before: always; /* Forces a new page */
+    page-break-before: always;
+    /* Forces a new page */
     margin: 0;
-    padding-top: 50mm; /* Ensure space below header */
+    padding-top: 50mm;
+    /* Ensure space below header */
   }
 
-  .desContent  {
+  .desContent {
     text-align: justify;
     margin-left: 30px;
     margin-right: 30px;
@@ -70,24 +85,33 @@ code {
     font-size: 16px;
 
   }
+
   .desContent p {
     text-indent: 30px;
-}
-.desContent2  {
-  text-align: justify;
-  margin-top: 40px;
-  margin-left: 40px;
-  margin-right: 40px;
-  line-height: 30px;
-  word-spacing: normal;
-  font-size: 16px;
+  }
 
-}
-.desContent2 p {
-  text-indent: 30px;
-}
+  .desContent2 {
+    text-align: justify;
+    margin-top: 40px;
+    margin-left: 40px;
+    margin-right: 40px;
+    line-height: 30px;
+    word-spacing: normal;
+    font-family: url('../public/fonts/UniIla.Sundaram-07.ttf');
+    font-size: 13px;
+  }
 
-  p, h1, h2, h3, h4, h5, h6 {
+  .desContent2 p {
+    text-indent: 30px;
+  }
+
+  p,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     page-break-inside: avoid;
   }
 }

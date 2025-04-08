@@ -7,10 +7,10 @@ import { useReactToPrint } from "react-to-print";
 const PdfScreen = ({ formData, tableData }) => {
     const contentRef = useRef(null);
     const reactToPrintFn = useReactToPrint({ contentRef });
-   console.log("form:",formData);
-   console.log("Tableform:",tableData);
+    console.log("form:", formData);
+    console.log("Tableform:", tableData);
 
-   
+
 
     const generatePDF = () => {
         const input = contentRef.current;
@@ -49,28 +49,28 @@ const PdfScreen = ({ formData, tableData }) => {
                         <p className="text-dark" style={{ margin: 0 }}>நாள் : 25.03.2025</p>
                     </div>
 
-                    <h5 className="text-center fw-bold text-dark " style={{ marginTop: '40px' }}>அறிவிப்பு:</h5>
+                    <h5 className="text-center fw-bold text-dark " style={{ marginTop: '40px', fontSize: "13px" }}>அறிவிப்பு:</h5>
                     <div className="desContent2 d-flex flex-column ">
                         <p className="text-dark">
-                        <strong>{formData?.zone_name || '___'}</strong> மாவட்டம், மேட்டூர் தொகுதி, <strong>{tableData?.[0]?.data?.voteNumber || '___'}</strong> ஆவது வாக்குச்சாவடியில்
-                            <strong> {tableData?.[0]?.data?.fullName || 'பயனர் பெயர்'} ({tableData?.[0]?.data?.memberNumber || 'ID'}) </strong>,
-                            நாம் தமிழர் கட்சி - <strong>{formData?.appointment || '___'}</strong> மாபெரும் <strong>{tableData?.[0]?.data?.selectedRole} </strong>
-                            ஒருமனதாக நியமிக்கப்படுகிறார்.
+                            <strong>{formData?.[0]?.data?.district_name || '___'}</strong> மாவட்டம், <strong>{formData?.[0]?.data?.zone_name || '___'}</strong> தொகுதி, <strong>{tableData?.[0]?.data?.voteNumber || '___'}</strong> ஆவது வாக்ககத்தைச் சேர்ந்த
+                            <strong> {tableData?.[0]?.data?.fullName || 'பயனர் பெயர்'} ({tableData?.[0]?.data?.memberNumber || 'ID'}) </strong> அவர்கள்,
+                            <strong>நாம் தமிழர் கட்சி</strong> - <strong>{formData?.[0]?.data?.appointment || '___'}</strong> <strong>ஒருங்கிணைப்பாளர்களில் ஒருவராக  </strong>
+                            நியமிக்கப்படுகிறார்.
                         </p>
 
                         <p className="text-dark">
-                            இதற்கு, கட்சியின் அனைத்து உறுப்பினர்களும், மாவட்ட மற்றும் ஒன்றிய முழு ஒருங்கிணைப்பாளர்களும் ஒத்துழைப்பு வழங்க வேண்டும் என்று கேட்டுக் கொள்கிறோம்.
+                            இவருக்கு, கட்சியின் அனைத்துநிலைப் பொறுப்பாளர்களும், அன்பு உறவுகள் அனைவரும் முழு ஒத்துழைப்பு நல்குமாறு அன்போடு கேட்டுக் கொள்ளப்படுகிறார்கள்,
                         </p>
                         <p className="text-dark">
-                            இது தொடர் வெற்றியை நோக்கி நாம் தமிழர் கட்சி முன்னேற தொடர்ந்த பயணத்திற்கான உறுதிப்பாட்டாகும்.
+                            புதிதாகப் பொறுப்பேற்கும் உறவுக்கு என்னுடைய புரட்சி வாழ்த்துக்கள். பொறுப்பையும், கடமையையும் உணர்ந்து நீங்கள் சிறப்பாகச் செயலாற்றுவீர்கள் என்ற நம்பிக்கையோடு!
                         </p>
-                        <p className="text-dark">
+                        {/* <p className="text-dark">
                             கட்சியின் அனைத்து உறுப்பினர்களும், ஆதரவாளர்களும், பொறுப்பாளர்களும் நம்பிக்கையுடன் செயல்பட வேண்டும்.
-                        </p>
+                        </p> */}
                     </div>
                     {/* Signature Section */}
-                    <div className="text-end" style={{ marginRight: "40px" }}>
-                        <p className="fw-semibold">சீமான்</p>
+                    <div className="text-end" style={{ marginRight: "40px", marginTop:"80px" }}>
+                        <p className="fw-semibold" style={{marginRight:"80px"}}>சீமான்</p>
                         <p className="text-muted">தலைமை ஒருங்கிணைப்பாளர்</p>
                     </div>
                 </div>

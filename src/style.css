@@ -6,11 +6,13 @@
 }
 
 body {
+    font-family: url('../public/fonts/UniIla.Sundaram-07.ttf');
+    font-size: 13px;
     width: 100%;
     height: 100vh;
     margin: 0;
     padding: 0;
-    font-family: 'Uni Ila-Sundaram-07', sans-serif;
+    /* font-family: 'Uni Ila-Sundaram-07', sans-serif; */
     overflow-x: hidden;
     background-color: #F8F9FA;
 }
@@ -20,32 +22,37 @@ body {
     position: fixed;
     top: 0;
     left: 0;
-    width: calc(100% - 250px); 
+    width: calc(100% - 250px);
     z-index: 1000;
     background-color: #ce1212;
-    margin-left: 250px; 
+    margin-left: 250px;
     transition: margin-left 0.3s ease-in-out;
-    height: 60px; 
+    height: 60px;
     display: flex;
     align-items: center;
     padding: 0 20px;
     z-index: 1050;
 }
+
 .navbar .dropdown-menu {
     position: absolute !important;
-    top: 60px; /* Adjust as needed */
+    top: 60px;
+    /* Adjust as needed */
     right: 0;
-    z-index: 1100 !important; /* Increased z-index to be above all other content */
+    z-index: 1100 !important;
+    /* Increased z-index to be above all other content */
 }
+
 .dropdown-menu.show {
-    display: block; /* Make sure the dropdown is visible */
+    display: block;
+    /* Make sure the dropdown is visible */
 }
 
 
 
 
 /* Adjust when Sidebar is Collapsed */
-.sidebar.collapsed + .navbar {
+.sidebar.collapsed+.navbar {
     margin-left: 60px;
     width: calc(100% - 60px);
 }
@@ -81,13 +88,15 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent overlay */
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Semi-transparent overlay */
     z-index: 0;
 }
 
 .sidebar-menu {
     position: relative;
-    z-index: 1; /* Make sure the content is above the overlay */
+    z-index: 1;
+    /* Make sure the content is above the overlay */
 }
 
 
@@ -132,15 +141,19 @@ body {
 .content-area {
     flex: 1;
     padding: 20px;
-    margin-left: 250px; /* Align with sidebar */
-    padding-top: 60px; /* Space for fixed header */
+    margin-left: 250px;
+    /* Align with sidebar */
+    padding-top: 60px;
+    /* Space for fixed header */
     transition: margin-left 0.3s ease-in-out;
-    height: 100%; /* Full height without scrolling */
-    overflow: hidden; /* Prevent scrolling */
+    height: 100%;
+    /* Full height without scrolling */
+    overflow: hidden;
+    /* Prevent scrolling */
 }
 
 /* Adjust when Sidebar is Collapsed */
-.sidebar.collapsed + .content-area {
+.sidebar.collapsed+.content-area {
     margin-left: 60px;
     width: calc(100% - 60px);
 }
@@ -148,11 +161,13 @@ body {
 /* Adjust when Sidebar is Collapsed */
 .content-area.expanded {
     margin-left: 60px;
-    width: calc(100% - 250px); /* Adjust width accordingly */
+    width: calc(100% - 250px);
+    /* Adjust width accordingly */
 }
 
 .scrollable-form {
-    max-height: 500px; /* Adjust the height as needed */
+    max-height: 500px;
+    /* Adjust the height as needed */
     overflow-y: auto;
     overflow-x: hidden;
     padding: 10px;
@@ -198,12 +213,19 @@ form label {
     margin-left: 250px;
     padding: 10px;
 }
-.container, .container-fluid, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
+
+.container,
+.container-fluid,
+.container-lg,
+.container-md,
+.container-sm,
+.container-xl,
+.container-xxl {
     --bs-gutter-x: 1.5rem;
     --bs-gutter-y: 0;
     width: 100%;
-    padding-right: calc(var(--bs-gutter-x)* );
-    padding-left: calc(var(--bs-gutter-x)* );
+    padding-right: calc(var(--bs-gutter-x)*);
+    padding-left: calc(var(--bs-gutter-x)*);
     margin-right: auto;
     margin-left: auto;
 }

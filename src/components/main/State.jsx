@@ -83,6 +83,8 @@ const State = () => {
         // First update the selected responsibility ID
         handleInputChange(index, field, value);
 
+        handleInputChange(index, "district_name", department?.name || "");
+
         // Then update the department name (as appointment) separately
         if (department) {
             handleInputChange(index, "appointment", department.name);
@@ -100,7 +102,7 @@ const State = () => {
         handleInputChange(index, field, value);
 
         // Save district name
-        handleInputChange(index, "zone_name", selectedDistrict?.name || "");
+        handleInputChange(index, "district_name", selectedDistrict?.name || "");
 
         // 🔥 Fetch zones from API
         try {
@@ -114,13 +116,18 @@ const State = () => {
         }
     };
 
+    const handleZoneChange = (index, field, value) => {
+        const selectedZone = zones.find(zone => zone._id.toString() === value);
+
+        // Save zone ID
+        handleInputChange(index, field, value);
+
+        // Save zone name
+        handleInputChange(index, "zone_name", selectedZone?.name || "");
+    };
+
     const [forms, setForms] = useState([{ id: 1, data: {} }]); // Array to store multiple forms
     const [tableForm, setTableForm] = useState([{ id: 1, data: {} }])
-
-
-
-
-
 
     // Function to add a new form
     const addNewForm = () => {
@@ -265,9 +272,13 @@ const State = () => {
     // Handle form submission
     const handleSubmit = (e) => {
         e.preventDefault();
+        alert("Form Submitted Successfully!");
         console.log("Submitted Data:", forms.map((item) => item.data));
-        console.log("Submitted Table Data:", tableForm.map((item) => item.data));
+        console.log("Submitted Table Data:", tableForm.map((tableItem) => tableItem.data));
     };
+
+    localStorage.setItem("tableForm", JSON.stringify(tableForm));
+    localStorage.setItem("forms", JSON.stringify(forms));
 
     return (
         <div className="tab-content">
@@ -338,7 +349,7 @@ const State = () => {
                                         <Form.Group className="mb-3">
                                             <Form.Label>தொகுதி</Form.Label>
                                             <Form.Select
-                                                onChange={(e) => handleInputChange(index, "zone", e.target.value)}
+                                                onChange={(e) => handleZoneChange(index, "zone", e.target.value)}
                                                 value={forms[index]?.data?.zone || ""}
                                             >
                                                 <option>தேர்ந்தெடு</option>
@@ -637,10 +648,14 @@ const State = () => {
                                     </button>
 
                                     <div style={{ overflowY: "auto", maxHeight: "70vh", paddingRight: "10px" }}>
-                                        {Array.isArray(tableForm) && tableForm.length > 1 ? (
-                                            <Pdf1 formData={forms} tableForm={tableForm} />
+                                        {Array.isArray(tableForm) && tableForm.length > 0 ? (
+                                            tableForm.length > 1 ? (
+                                                <Pdf1 formData={forms} tableData={tableForm} />
+                                            ) : (
+                                                <Pdf formData={forms} tableData={tableForm} />
+                                            )
                                         ) : (
-                                            <Pdf formData={forms} tableData={tableForm} />
+                                            <div>No data available</div> // Optional fallback
                                         )}
 
                                     </div>

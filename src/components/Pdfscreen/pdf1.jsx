@@ -10,8 +10,12 @@ const PdfScreen1 = ({ formData, tableData }) => {
     const contentRef = useRef(null);
 
     const reactToPrintFn = useReactToPrint({ contentRef });
-    console.log("form:",formData);
-    console.log("Tableform:",tableData);
+    console.log("form:", formData);
+    console.log("Tableform:", tableData);
+    const tableForm = JSON.parse(localStorage.getItem("tableForm") || "[]");
+    const forms = JSON.parse(localStorage.getItem("forms") || "{}");
+    console.log("Array Form", forms);
+    console.log("Array Table Form", tableForm);
     const generatePDF = () => {
         const input = contentRef.current;
 
@@ -55,7 +59,7 @@ const PdfScreen1 = ({ formData, tableData }) => {
 
                 {/* Main Content Section */}
                 <div className="content " style={{ fontSize: '14px' }}>
-                    <div className="text-end" style={{marginTop:"20px", marginRight: "40px", lineHeight: "1.2" }}>
+                    <div className="text-end" style={{ marginTop: "20px", marginRight: "40px", lineHeight: "1.2" }}>
                         <p className="text-dark" style={{ margin: 0 }}>க.எண் : 733653482 </p>
                         <p className="text-dark" style={{ margin: 0 }}>நாள் : 25.03.2025</p>
                     </div>
@@ -63,11 +67,11 @@ const PdfScreen1 = ({ formData, tableData }) => {
                     <p className="text-center fw-bold text-dark" style={{ textDecoration: "underline" }}>
                         அறிவிப்பு :
                     </p>
-                    <h6 className="fw-bold text-center">இராமநாதபுரம் திருவாடானை மண்டலம்</h6>
-                    <p className="fw-bold text-center">(திருவாடானை சட்டமன்றத் தொகுதி)</p>
+                    <h6 className="fw-bold text-center"><strong>{formData?.[0]?.data?.district_name || '___'}</strong> <strong>{formData?.[0]?.data?.zone_name || '___'}</strong> மண்டலம்</h6>
+                    <p className="fw-bold text-center">(<strong>{formData?.[0]?.data?.zone_name || '___'}</strong> சட்டமன்றத் தொகுதி)</p>
                     <h6 className="fw-bold text-center">பொறுப்பாளர்கள் நியமனம் – 2025</h6>
 
-                    <p className="fw-bold text-center ">இராமநாதபுரம் திருவாடானை மண்டலம் - பொறுப்பாளர்கள் நியமனம்  2025</p>
+                    <p className="fw-bold text-center "><strong>{formData?.[0]?.data?.district_name || '___'}</strong> <strong>{formData?.[0]?.data?.zone_name || '___'}</strong> மண்டலம் - பொறுப்பாளர்கள் நியமனம்  2025</p>
 
 
                     <div className="d-flex flex-column p-2" style={{ textAlign: "start", marginLeft: '30px' }}>
@@ -77,14 +81,18 @@ const PdfScreen1 = ({ formData, tableData }) => {
                             <div className="col">உறுப்பினர் எண்</div>
                             <div className="col">வாக்கக எண்</div>
                         </div>
-                        <p className="fw-bold  mt-1">இராமநாதபுரம் திருவாடானை மண்டலம் பொறுப்பாளர்</p>
+                        <p className="fw-bold  mt-1"><strong>{formData?.[0]?.data?.district_name || '___'}</strong> <strong>{formData?.[0]?.data?.zone_name || '___'}</strong> மண்டலம் பொறுப்பாளர்</p>
 
-                        <div className="d-flex ">
-                            <div className="col">செயலாளர்</div>
-                            <div className="col">அருண்குமார்</div>
-                            <div className="col">17017056341</div>
-                            <div className="col">66</div>
-                        </div>
+                        {tableData.map((tabData) => (
+
+                            <div className="d-flex ">
+                                <div className="col">{tabData?.data?.selectedRole || '___'}</div>
+                                <div className="col">{tabData?.data?.fullName || '___'}</div>
+                                <div className="col">{tabData?.data?.memberNumber || '___'}</div>
+                                <div className="col">{tabData?.data?.voteNumber || '___'}</div>
+                            </div>
+                        ))}
+
 
                     </div>
                     <div className="d-flex flex-column p-2" style={{ textAlign: "start", marginLeft: '30px' }}>
