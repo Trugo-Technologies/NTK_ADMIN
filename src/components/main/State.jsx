@@ -126,16 +126,23 @@ const State = () => {
         handleInputChange(index, "zone_name", selectedZone?.name || "");
     };
 
-    const [forms, setForms] = useState([{ id: 1, data: {} }]); // Array to store multiple forms
-    const [tableForm, setTableForm] = useState([{ id: 1, data: {} }])
+    const [forms, setForms] = useState([{ id: 1, data: {},tableForm:[] }]); // Array to store multiple forms
+    //const [tableForm, setTableForm] = useState([{ id: 1, data: {} }])
 
     // Function to add a new form
     const addNewForm = () => {
-        setForms([...forms, { id: forms.length + 1, data: {} }]);
+        //setTableForm([...tableForm, { id: tableForm.length + 1, data: {} }]);
+        let tableForm=[{id:1,data:{}}];
+        setForms([...forms, { id: forms.length + 1, data: {},tableForm :tableForm  }]);
     };
 
-    const addNewTableForm = () => {
-        setTableForm([...tableForm, { id: tableForm.length + 1, data: {} }]);
+    const addNewTableForm = (form) => {
+        //setTableForm([...tableForm, { id: tableForm.length + 1, data: {} }]);
+
+        //setTableForm([...tableForm, { id: form.tableForm.length + 1, data: {} }]);
+        let tableForm=[...form.tableForm,{id:form.tableForm.length+1,data:{}}];
+
+        setForms([...form,{tableForm :tableForm  }]);
     }
 
     const removeForm = (index) => {
@@ -471,7 +478,7 @@ const State = () => {
 
                                         {/* Add Button Aligned to Right */}
                                         <div className="col-md-8 d-flex justify-content-end align-items-end">
-                                            <Button className="flex-shrink-0" style={{ backgroundColor: "#FAE818", color: "#000", border: "none" }} onClick={addNewTableForm}>
+                                            <Button className="flex-shrink-0" style={{ backgroundColor: "#FAE818", color: "#000", border: "none" }} onClick={addNewTableForm(form)}>
                                                 <b>+</b>
                                             </Button>
                                         </div>
@@ -655,7 +662,7 @@ const State = () => {
                                                 <Pdf formData={forms} tableData={tableForm} />
                                             )
                                         ) : (
-                                            <div>No data available</div> // Optional fallback
+                                            <div>No data available</div> 
                                         )}
 
                                     </div>
