@@ -7,6 +7,10 @@ import { useReactToPrint } from "react-to-print";
 const PdfScreen = ({ formData, tableData }) => {
     const contentRef = useRef(null);
     const reactToPrintFn = useReactToPrint({ contentRef });
+   console.log("form:",formData);
+   console.log("Tableform:",tableData);
+
+   
 
     const generatePDF = () => {
         const input = contentRef.current;
@@ -47,11 +51,13 @@ const PdfScreen = ({ formData, tableData }) => {
 
                     <h5 className="text-center fw-bold text-dark " style={{ marginTop: '40px' }}>அறிவிப்பு:</h5>
                     <div className="desContent2 d-flex flex-column ">
-                        <p className="text-dark  " >
-                            சேலம் மாவட்டம், மேட்டூர் தொகுதி, <strong>{formData?.district || '___'}</strong>ஆவது வாக்குச்சாவடியில்
-                            <strong> {formData?.name || 'பயனர் பெயர்'} ({formData?.voterId || 'ID'}) </strong>, நாம் தமிழர் கட்சி - {formData?.division || '___'} பாசறையின் மாபெரும் ஒருங்கிணைப்பாளராக
+                        <p className="text-dark">
+                        <strong>{formData?.zone_name || '___'}</strong> மாவட்டம், மேட்டூர் தொகுதி, <strong>{tableData?.[0]?.data?.voteNumber || '___'}</strong> ஆவது வாக்குச்சாவடியில்
+                            <strong> {tableData?.[0]?.data?.fullName || 'பயனர் பெயர்'} ({tableData?.[0]?.data?.memberNumber || 'ID'}) </strong>,
+                            நாம் தமிழர் கட்சி - <strong>{formData?.appointment || '___'}</strong> மாபெரும் <strong>{tableData?.[0]?.data?.selectedRole} </strong>
                             ஒருமனதாக நியமிக்கப்படுகிறார்.
                         </p>
+
                         <p className="text-dark">
                             இதற்கு, கட்சியின் அனைத்து உறுப்பினர்களும், மாவட்ட மற்றும் ஒன்றிய முழு ஒருங்கிணைப்பாளர்களும் ஒத்துழைப்பு வழங்க வேண்டும் என்று கேட்டுக் கொள்கிறோம்.
                         </p>

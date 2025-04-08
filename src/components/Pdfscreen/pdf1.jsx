@@ -6,11 +6,12 @@ import html2canvas from "html2canvas";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useReactToPrint } from "react-to-print";
 
-const PdfScreen1 = () => {
+const PdfScreen1 = ({ formData, tableData }) => {
     const contentRef = useRef(null);
 
     const reactToPrintFn = useReactToPrint({ contentRef });
-
+    console.log("form:",formData);
+    console.log("Tableform:",tableData);
     const generatePDF = () => {
         const input = contentRef.current;
 

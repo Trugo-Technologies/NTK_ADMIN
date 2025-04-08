@@ -28,8 +28,8 @@ const LoginScreen = () => {
 
             if (response.ok) {
                
-                localStorage.setItem('token', data.token); // Store token for authentication
-                navigate('/dashboard'); // Redirect to State page
+                localStorage.setItem('authToken', data.token);
+                navigate('/dashboard'); 
             } else {
                 setError(data.message || 'Invalid credentials');
             }

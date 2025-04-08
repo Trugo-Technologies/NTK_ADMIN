@@ -16,7 +16,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import "../../style.css";
 import Pdf from "../Pdfscreen/pdf";
-import axios from "axios";
+import axiosInstance from "../axios";
+import Pdf1 from "../Pdfscreen/pdf1";
+
+
 
 const State = () => {
     const navigate = useNavigate();
@@ -24,18 +27,13 @@ const State = () => {
     const [departments, setDepartments] = useState([]);
     const [district, setDistricts] = useState([]);
     const [constituency, setConstituency] = useState([]);
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtaWQiOiJBZG1pbkhEIiwiaWF0IjoxNzQzNzQ3MzQ5LCJleHAiOjE3NDQwMDY1NDl9.bjMMr_BUafxUyg5921lxBvjWl0ZtMNqtxdCgq8T90Jg"; // Replace with the actual token
 
     useEffect(() => {
         const fetchDepartments = async () => {
             try {
-                const response = await axios.get(
+                const response = await axiosInstance.get(
                     "https://api.naamtamilar.org/api/member/department/list",
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`, // Sending token in the header
-                        },
-                    }
+
                 );
                 setDepartments(response.data);
             } catch (error) {
@@ -47,13 +45,9 @@ const State = () => {
 
         const fetchDistrict = async () => {
             try {
-                const response = await axios.get(
+                const response = await axiosInstance.get(
                     "https://api.naamtamilar.org/api/location/district/list/5ae6c7deab123c41f43bb368",
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`, // Sending token in the header
-                        },
-                    }
+
                 );
                 setDistricts(response.data);
             } catch (error) {
@@ -65,13 +59,9 @@ const State = () => {
 
         const fetchConstituency = async () => {
             try {
-                const response = await axios.get(
+                const response = await axiosInstance.get(
                     "https://api.naamtamilar.org/api/location/arealist/hlevel/5ae5f4aeab123c41f43bb349",
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`, // Sending token in the header
-                        },
-                    }
+
                 );
                 setConstituency(response.data);
             } catch (error) {
@@ -114,10 +104,8 @@ const State = () => {
 
         // 🔥 Fetch zones from API
         try {
-            const response = await axios.get(`https://api.naamtamilar.org/api/location/district/constituency/list/${value}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
+            const response = await axiosInstance.get(`https://api.naamtamilar.org/api/location/district/constituency/list/${value}`, {
+
             });
             setZones(response.data); // Set zones into state
         } catch (error) {
@@ -128,6 +116,11 @@ const State = () => {
 
     const [forms, setForms] = useState([{ id: 1, data: {} }]); // Array to store multiple forms
     const [tableForm, setTableForm] = useState([{ id: 1, data: {} }])
+
+
+
+
+
 
     // Function to add a new form
     const addNewForm = () => {
@@ -149,6 +142,15 @@ const State = () => {
             setTableForm(tableForm.filter((_, i) => i !== index));
         }
     }
+
+    const getAvailableRoles = (currentIndex) => {
+        const selectedRoleIds = tableForm
+            .filter((_, idx) => idx !== currentIndex)
+            .map(entry => String(entry?.data?.roleId))
+            .filter(Boolean);
+
+        return selectedRoles.filter(role => !selectedRoleIds.includes(String(role.id)));
+    };
 
     // Handle form data change
     const fetchMemberData = async (memberNumber) => {
@@ -184,7 +186,6 @@ const State = () => {
             // Fetch member data
             const memberData = await fetchMemberData(value);
 
-            // Map data
             const mappedData = memberData
                 ? {
                     memberNumber: value,
@@ -196,7 +197,6 @@ const State = () => {
                 }
                 : { memberNumber: value };
 
-            // 🔥 Merge the mapped data into existing data
             if (isTableForm) {
                 setTableForm(prev => {
                     const updated = [...prev];
@@ -215,6 +215,32 @@ const State = () => {
                         ...mappedData
                     };
                     updated[index].loading = false;
+                    return updated;
+                });
+            }
+        } else if (field === "roleId") {
+            const selectedRole = getAvailableRoles(index).find(role => String(role.id) === String(value));
+            const updatedData = {
+                roleId: value,
+                selectedRole: selectedRole ? selectedRole.name : ""
+            };
+
+            if (isTableForm) {
+                setTableForm(prev => {
+                    const updated = [...prev];
+                    updated[index].data = {
+                        ...updated[index].data,
+                        ...updatedData
+                    };
+                    return updated;
+                });
+            } else {
+                setForms(prev => {
+                    const updated = [...prev];
+                    updated[index].data = {
+                        ...updated[index].data,
+                        ...updatedData
+                    };
                     return updated;
                 });
             }
@@ -234,6 +260,7 @@ const State = () => {
             }
         }
     };
+
 
     // Handle form submission
     const handleSubmit = (e) => {
@@ -328,7 +355,8 @@ const State = () => {
                                             <Form.Label>வாக்கக எண்</Form.Label>
                                             <Form.Control
                                                 type="number"
-                                                onChange={(e) => handleInputChange(index, "number", e.target.value)}
+                                                value={tableForm[index]?.data?.number || ""}
+                                                onChange={(e) => handleInputChange(index, "number", e.target.value, true)}
                                             />
                                         </Form.Group>
                                     </div>
@@ -456,14 +484,19 @@ const State = () => {
                                             <tbody key={index}>
                                                 <tr>
                                                     <td>
-                                                        <Form.Select onChange={(e) => handleInputChange(index, "roleId", e.target.value, true)}>
+                                                        <Form.Select
+                                                            key={index}
+                                                            value={form.data.roleId || ""}
+                                                            onChange={(e) => handleInputChange(index, "roleId", e.target.value, true)}
+                                                        >
                                                             <option value="">தேர்ந்தெடு</option>
-                                                            {selectedRoles.map((role) => (
-                                                                <option key={role.id} value={role.id}>
+                                                            {getAvailableRoles(index).map((role) => (
+                                                                <option key={role.id} value={String(role.id)}>
                                                                     {role.name}
                                                                 </option>
                                                             ))}
                                                         </Form.Select>
+
                                                     </td>
                                                     <td>
                                                         <Form.Group>
@@ -573,13 +606,13 @@ const State = () => {
                                 onRequestClose={() => setModalIsOpen(false)}
                                 style={{
                                     content: {
-                                        width: "60%", // Adjust width as needed
-                                        maxHeight: "80vh", // Limits the modal height
+                                        width: "60%",
+                                        maxHeight: "80vh",
                                         margin: "auto",
                                         borderRadius: "10px",
-                                        overflowY: "auto", // Enables scrolling inside the modal
+                                        overflowY: "auto",
                                         padding: "20px",
-                                        zIndex: "1050", // Ensures modal is above sticky header
+                                        zIndex: "1050",
                                     },
                                     overlay: {
                                         backgroundColor: "rgba(0, 0, 0, 0.6)",
@@ -602,11 +635,18 @@ const State = () => {
                                     >
                                         Close
                                     </button>
+
                                     <div style={{ overflowY: "auto", maxHeight: "70vh", paddingRight: "10px" }}>
-                                        <Pdf formData={forms} tableData={tableForm.map(item => item.data)} />
+                                        {Array.isArray(tableForm) && tableForm.length > 1 ? (
+                                            <Pdf1 formData={forms} tableForm={tableForm} />
+                                        ) : (
+                                            <Pdf formData={forms} tableData={tableForm} />
+                                        )}
+
                                     </div>
                                 </div>
                             </Modal>
+
 
                             {/* Remove Button */}
                             <div className="text-end">
