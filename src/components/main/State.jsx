@@ -94,12 +94,12 @@ const State = () => {
 
     const [selectedRoles, setSelectedRoles] = useState([]);
 
-
-
-    const handleDepartmentChange = (formIndex, field, value) => {
+   
+    
+  const handleDepartmentChange = (formIndex, field, value) => {
         const department = departments.find(dept => dept._id.toString() === value);
         setSelectedRoles(department ? department.roles : []);
-
+       
 
         if (department) {
             handleInputChange(formIndex, null, "appointment", department.name);
@@ -142,18 +142,9 @@ const State = () => {
     const addNewForm = () => {
         setForms(prev => [
             ...prev,
-            {
-                id: prev.length + 1, data: {}, tableForm: [{
-                    id: 1, data: {
-                        memberNumber: "",
-                        name: "",
-                        fatherName: "",
-                        voteNumber: "",
-                        fullName: "",
-                        image: "",
-                    }, loading: false
-                }]
-            }
+            { id: prev.length + 1, data: {}, tableForm: [{ id: 1, data: {
+                
+            } }] }
         ]);
     };
 
@@ -209,61 +200,81 @@ const State = () => {
     };
 
     // Handle form data change
-    const handleInputChange = async (formIndex, tableIndex, field, value, isTableForm = false) => {
-        if (field === "memberNumber") {
-            setForms(prev => {
-                const updated = [...prev];
-                if (isTableForm) {
-                    updated[formIndex].tableForm[tableIndex].loading = true;
-                } else {
-                    updated[formIndex].loading = true;
-                }
-                return updated;
-            });
+   const handleInputChange = async (formIndex, tableIndex, field, value, isTableForm = false) => {
+    if (field === "memberNumber") {
+        // Show loading spinner
+        setForms(prev => {
+            const updated = [...prev];
+            const form = { ...updated[formIndex] };
+            const tableForm = [...form.tableForm];
+            const row = { ...tableForm[tableIndex], loading: true };
 
-            const memberData = await fetchMemberData(value);
+            tableForm[tableIndex] = row;
+            form.tableForm = tableForm;
+            updated[formIndex] = form;
+            return updated;
+        });
 
-            const mappedData = memberData
-                ? {
-                    memberNumber: value,
-                    name: memberData.name,
-                    fatherName: memberData.sname,
-                    voteNumber: memberData.boothId,
-                    fullName: `${memberData.name} ${memberData.sname}`,
-                    image: `http://join.naamtamilar.org/${value}.jpg`
-                }
-                : { memberNumber: value };
+        const memberData = await fetchMemberData(value);
 
-            setForms(prev => {
-                const updated = [...prev];
-                if (isTableForm) {
-                    updated[formIndex].tableForm[tableIndex].data = {
-                        ...updated[formIndex].tableForm[tableIndex].data,
-                        ...mappedData
-                    };
-                    updated[formIndex].tableForm[tableIndex].loading = false;
-                } else {
-                    updated[formIndex].data = {
-                        ...updated[formIndex].data,
-                        ...mappedData
-                    };
-                    updated[formIndex].loading = false;
-                }
-                return updated;
-            });
-        } else {
-            const updateValue = (prev) => {
-                const updated = [...prev];
-                if (isTableForm) {
-                    updated[formIndex].tableForm[tableIndex].data[field] = value;
-                } else {
-                    updated[formIndex].data[field] = value;
-                }
-                return updated;
+        const mappedData = memberData
+            ? {
+                memberNumber: value,
+                name: memberData.name,
+                fatherName: memberData.sname,
+                voteNumber: memberData.boothId,
+                fullName: `${memberData.name} ${memberData.sname}`,
+                image: `http://join.naamtamilar.org/${value}.jpg`
+            }
+            : { memberNumber: value };
+
+        // Set mapped data
+        setForms(prev => {
+            const updated = [...prev];
+            const form = { ...updated[formIndex] };
+            const tableForm = [...form.tableForm];
+            const row = {
+                ...tableForm[tableIndex],
+                data: {
+                    ...tableForm[tableIndex].data,
+                    ...mappedData
+                },
+                loading: false
             };
-            setForms(updateValue);
-        }
-    };
+
+            tableForm[tableIndex] = row;
+            form.tableForm = tableForm;
+            updated[formIndex] = form;
+            return updated;
+        });
+    } else {
+        setForms(prev => {
+            const updated = [...prev];
+            const form = { ...updated[formIndex] };
+
+            if (isTableForm) {
+                const tableForm = [...form.tableForm];
+                const row = {
+                    ...tableForm[tableIndex],
+                    data: {
+                        ...tableForm[tableIndex].data,
+                        [field]: value
+                    }
+                };
+                tableForm[tableIndex] = row;
+                form.tableForm = tableForm;
+            } else {
+                form.data = {
+                    ...form.data,
+                    [field]: value
+                };
+            }
+
+            updated[formIndex] = form;
+            return updated;
+        });
+    }
+};
 
 
 
@@ -467,13 +478,13 @@ const State = () => {
                                 </div>
                             )}
 
-                            {/* Input Field to Show Selected Value */}
-                            {/* */}
+                            {forms.map((form, formIndex) => {
+                                const { party_responsibility_status } = form.data || {};
 
                             {forms.map((form, formIndex) => (
-                                (form.data.party_responsibility_status?.value === "state" ||
-                                    form.data.party_responsibility_status?.value === "zone" ||
-                                    form.data.party_responsibility_status?.value === "party_district") && (
+                                (form.data.party_responsibility_status === "state" ||
+                                    form.data.party_responsibility_status === "zone" ||
+                                    form.data.party_responsibility_status === "party_district") && (
                                     <div key={formIndex} className="mb-4 p-3 mt-4" style={{ border: "1px solid black" }}>
                                         <div className="row mb-3">
                                             <div className="col-md-4">
@@ -593,8 +604,10 @@ const State = () => {
                                             </tbody>
                                         </table>
                                     </div>
-                                )
-                            ))}
+                                );
+                            })}
+
+                         
 
                             {/* Modal */}
                             <Modal
