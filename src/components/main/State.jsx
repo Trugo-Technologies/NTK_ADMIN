@@ -478,13 +478,12 @@ const State = () => {
                                 </div>
                             )}
 
-                            {forms.map((form, formIndex) => {
-                                const { party_responsibility_status } = form.data || {};
-
                             {forms.map((form, formIndex) => (
-                                (form.data.party_responsibility_status === "state" ||
-                                    form.data.party_responsibility_status === "zone" ||
-                                    form.data.party_responsibility_status === "party_district") && (
+                                (
+                                    form.data.party_responsibility_status?.value === "state" ||
+                                    form.data.party_responsibility_status?.value === "zone" ||
+                                    form.data.party_responsibility_status?.value === "party_district"
+                                ) && (
                                     <div key={formIndex} className="mb-4 p-3 mt-4" style={{ border: "1px solid black" }}>
                                         <div className="row mb-3">
                                             <div className="col-md-4">
@@ -604,11 +603,8 @@ const State = () => {
                                             </tbody>
                                         </table>
                                     </div>
-                                );
-                            })}
-
-                         
-
+                                )
+                            ))}
                             {/* Modal */}
                             <Modal
                                 isOpen={modalIsOpen}
