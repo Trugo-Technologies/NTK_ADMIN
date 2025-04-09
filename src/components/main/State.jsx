@@ -127,7 +127,7 @@ const State = () => {
     };
 
     const [forms, setForms] = useState([{ id: 1, data: {},tableForm:[] }]); // Array to store multiple forms
-    //const [tableForm, setTableForm] = useState([{ id: 1, data: {} }])
+    const [tableForm, setTableForm] = useState([{ id: 1, data: {} }]);
 
     // Function to add a new form
     const addNewForm = () => {
