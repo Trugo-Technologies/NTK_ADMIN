@@ -83,14 +83,16 @@ const PdfScreen1 = ({ formData, tableData }) => {
                         </div>
                         <p className="fw-bold  mt-1"><strong>{formData?.[0]?.data?.district_name || '___'}</strong> <strong>{formData?.[0]?.data?.zone_name || '___'}</strong> மண்டலம் பொறுப்பாளர்</p>
 
-                        {tableData.map((tabData) => (
-
-                            <div className="d-flex ">
-                                <div className="col">{tabData?.data?.selectedRole || '___'}</div>
-                                <div className="col">{tabData?.data?.fullName || '___'}</div>
-                                <div className="col">{tabData?.data?.memberNumber || '___'}</div>
-                                <div className="col">{tabData?.data?.voteNumber || '___'}</div>
-                            </div>
+                        {formData.map((formItem, i) => (
+                            Array.isArray(formItem?.tableForm) &&
+                            formItem.tableForm.map((tabData, idx) => (
+                                <div className="d-flex" key={`${i}-${idx}`} style={{ padding: '8px 0', borderBottom: '1px solid #ccc' }}>
+                                    <div className="col">{tabData?.data?.roleId || '___'}</div>
+                                    <div className="col">{tabData?.data?.fullName || tabData?.data?.name || '___'}</div>
+                                    <div className="col">{tabData?.data?.memberNumber || '___'}</div>
+                                    <div className="col">{tabData?.data?.voteNumber || '___'}</div>
+                                </div>
+                            ))
                         ))}
 
 

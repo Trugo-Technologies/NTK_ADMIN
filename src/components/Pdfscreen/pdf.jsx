@@ -52,7 +52,7 @@ const PdfScreen = ({ formData, tableData }) => {
                     <h5 className="text-center fw-bold text-dark " style={{ marginTop: '40px', fontSize: "13px" }}>அறிவிப்பு:</h5>
                     <div className="desContent2 d-flex flex-column ">
                         <p className="text-dark">
-                            <strong>{formData?.[0]?.data?.district_name || '___'}</strong> மாவட்டம், <strong>{formData?.[0]?.data?.zone_name || '___'}</strong> தொகுதி, <strong>{tableData?.[0]?.data?.voteNumber || '___'}</strong> ஆவது வாக்ககத்தைச் சேர்ந்த
+                            <strong>{formData?.[0]?.data?.district_name || '___'}</strong> மாவட்டம், <strong>{formData?.[0]?.data?.zone_name || '___'}</strong> தொகுதி, <strong>{formData?.[0]?.data?.number || '___'}</strong> ஆவது வாக்ககத்தைச் சேர்ந்த
                             <strong> {tableData?.[0]?.data?.fullName || 'பயனர் பெயர்'} ({tableData?.[0]?.data?.memberNumber || 'ID'}) </strong> அவர்கள்,
                             <strong>நாம் தமிழர் கட்சி</strong> - <strong>{formData?.[0]?.data?.appointment || '___'}</strong> <strong>ஒருங்கிணைப்பாளர்களில் ஒருவராக  </strong>
                             நியமிக்கப்படுகிறார்.

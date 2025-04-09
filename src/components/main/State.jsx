@@ -27,6 +27,26 @@ const State = () => {
     const [departments, setDepartments] = useState([]);
     const [district, setDistricts] = useState([]);
     const [constituency, setConstituency] = useState([]);
+    const responsibilityLabels = {
+        state: "மாநிலம்",
+        zone: "மண்டலம்",
+        party_district: "கட்சி மாவட்டம்",
+        vol: "தொகுதி",
+        branch: "கிளை",
+    };
+
+    const emptyTableForm = {
+        data: {
+            memberNumber: "",
+            name: "",
+            fatherName: "",
+            voteNumber: "",
+            fullName: "",
+            image: "",
+            // add other fields if you have more
+        },
+        loading: false
+    };
 
     useEffect(() => {
         const fetchDepartments = async () => {
@@ -74,12 +94,12 @@ const State = () => {
 
     const [selectedRoles, setSelectedRoles] = useState([]);
 
-   
-    
-  const handleDepartmentChange = (formIndex, field, value) => {
+
+
+    const handleDepartmentChange = (formIndex, field, value) => {
         const department = departments.find(dept => dept._id.toString() === value);
         setSelectedRoles(department ? department.roles : []);
-       
+
 
         if (department) {
             handleInputChange(formIndex, null, "appointment", department.name);
@@ -87,15 +107,15 @@ const State = () => {
             handleInputChange(formIndex, null, "appointment", "");
         }
     };
-    
+
     const [zones, setZones] = useState([]);
-    
+
     const handleDistrictChange = async (formIndex, field, value) => {
         const selectedDistrict = district.find(dis => dis._id.toString() === value);
-    
-      
-        handleInputChange(formIndex,null, "district_name", selectedDistrict?.name || "");
-    
+
+
+        handleInputChange(formIndex, null, "district_name", selectedDistrict?.name || "");
+
         // Fetch zones under selected district
         try {
             const response = await axiosInstance.get(
@@ -107,24 +127,33 @@ const State = () => {
             setZones([]);
         }
     };
-    
+
     const handleZoneChange = (formIndex, field, value) => {
         const selectedZone = zones.find(zone => zone._id.toString() === value);
-    
-       
-        handleInputChange(formIndex,null, "zone_name", selectedZone?.name || "");
+
+
+        handleInputChange(formIndex, null, "zone_name", selectedZone?.name || "");
     };
-    
+
 
     const [forms, setForms] = useState([{ id: 1, data: {}, tableForm: [{ id: 1, data: {} }] }]);
 
-    console.log("from data:",forms)
+    console.log("from data:", forms)
     const addNewForm = () => {
         setForms(prev => [
             ...prev,
-            { id: prev.length + 1, data: {}, tableForm: [{ id: 1, data: {
-                
-            } }] }
+            {
+                id: prev.length + 1, data: {}, tableForm: [{
+                    id: 1, data: {
+                        memberNumber: "",
+                        name: "",
+                        fatherName: "",
+                        voteNumber: "",
+                        fullName: "",
+                        image: "",
+                    }, loading: false
+                }]
+            }
         ]);
     };
 
@@ -255,7 +284,7 @@ const State = () => {
                 className="d-flex justify-content-between align-items-center mb-4 mt-4 bg-white p-3 shadow-sm sticky-top"
                 style={{ top: "0", zIndex: "1020" }}
             >
-                <h6 className="text-start mb-0"><b>பொறுப்பாளர்கள் தகவல்கள்</b></h6>
+                <span className="text-start mb-0"><b>பொறுப்பாளர்கள் தகவல்கள்</b></span>
 
                 <div className="d-flex align-items-center gap-3">
                     {/* Display Count */}
@@ -274,9 +303,11 @@ const State = () => {
                                 <div className="col-md-4">
                                     <Form.Group className="mb-3">
                                         <Form.Label>கட்சிப்பொறுப்பு நிலை</Form.Label>
-                                        <Form.Select onChange={(e) =>
-                                            handleInputChange(index, null, "party_responsibility_status", e.target.value)
-                                        }>
+                                        <Form.Select onChange={(e) => {
+                                            const value = e.target.value;
+                                            const label = responsibilityLabels[value];
+                                            handleInputChange(index, null, "party_responsibility_status", { value, label });
+                                        }}>
                                             <option>தேர்ந்தெடு</option>
                                             <option value="state">மாநிலம் </option>
                                             <option value="zone">மண்டலம்</option>
@@ -289,7 +320,7 @@ const State = () => {
                                 <div className="col-md-4">
                                     <Form.Group className="mb-3">
                                         <Form.Label>பொறுப்பு</Form.Label>
-                                        
+
                                         <Form.Select onChange={(e) => handleDepartmentChange(index, "responsibility", e.target.value)}>
                                             <option>தேர்ந்தெடு</option>
                                             {departments.map((dept) => (
@@ -302,7 +333,7 @@ const State = () => {
                                 </div>
                             </div>
 
-                            {forms[index]?.data?.party_responsibility_status === "state" && (
+                            {forms[index]?.data?.party_responsibility_status?.value === "state" && (
                                 <div className="row">
                                     {/* District Select */}
                                     <div className="col-md-4">
@@ -312,7 +343,7 @@ const State = () => {
                                                 onChange={(e) =>
                                                     handleDistrictChange(index, "district", e.target.value)
                                                 }
-                                                
+
                                             >
                                                 <option>தேர்ந்தெடு</option>
                                                 {district.map((dis) => (
@@ -332,7 +363,7 @@ const State = () => {
                                                 onChange={(e) =>
                                                     handleZoneChange(index, "zone", e.target.value)
                                                 }
-                                               
+
                                             >
                                                 <option>தேர்ந்தெடு</option>
                                                 {zones.map((zone) => (
@@ -350,9 +381,9 @@ const State = () => {
                                             <Form.Label>வாக்கக எண்</Form.Label>
                                             <Form.Control
                                                 type="number"
-                                              
+
                                                 onChange={(e) =>
-                                                    handleInputChange(index,null, "number", e.target.value)
+                                                    handleInputChange(index, null, "number", e.target.value)
                                                 }
                                             />
                                         </Form.Group>
@@ -361,7 +392,7 @@ const State = () => {
                             )}
 
 
-                            {((forms[index].data.party_responsibility_status === "zone")) && (
+                            {((forms[index].data.party_responsibility_status?.value === "zone")) && (
                                 <div className="row">
                                     <div className="col-md-4">
                                         <Form.Group className="mb-3">
@@ -404,7 +435,7 @@ const State = () => {
                                 </div>
                             )}
 
-                            {((forms[index].data.party_responsibility_status === "party_district")) && (
+                            {((forms[index].data.party_responsibility_status?.value === "party_district")) && (
                                 <div className="row">
                                     <div className="col-md-4">
                                         <Form.Group className="mb-3">
@@ -440,9 +471,9 @@ const State = () => {
                             {/* */}
 
                             {forms.map((form, formIndex) => (
-                                (form.data.party_responsibility_status === "state" ||
-                                    form.data.party_responsibility_status === "zone" ||
-                                    form.data.party_responsibility_status === "party_district") && (
+                                (form.data.party_responsibility_status?.value === "state" ||
+                                    form.data.party_responsibility_status?.value === "zone" ||
+                                    form.data.party_responsibility_status?.value === "party_district") && (
                                     <div key={formIndex} className="mb-4 p-3 mt-4" style={{ border: "1px solid black" }}>
                                         <div className="row mb-3">
                                             <div className="col-md-4">
@@ -602,8 +633,8 @@ const State = () => {
                                     </button>
 
                                     <div style={{ overflowY: "auto", maxHeight: "70vh", paddingRight: "10px" }}>
-                                        {Array.isArray(forms) && forms.forms > 0 ? (
-                                            forms.length > 1 ? (
+                                        {Array.isArray(forms) && forms.length > 0 ? (
+                                            forms[index]?.tableForm?.length > 1 ? (
                                                 <Pdf1 formData={forms} />
                                             ) : (
                                                 <Pdf formData={forms} />
@@ -611,7 +642,6 @@ const State = () => {
                                         ) : (
                                             <div>No data available</div>
                                         )}
-
                                     </div>
                                 </div>
                             </Modal>
