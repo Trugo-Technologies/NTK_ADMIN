@@ -90,18 +90,19 @@ const State = () => {
     const addNewForm = () => {
         setForms(prev => [...prev, { id: prev.length + 1, data: {}, tableForm: [{ id: 1, data: {} }] }]);
     };
+    console.log("forms", forms);
 
     const addNewTableForm = (formIndex) => {
         setForms((prev) =>
             prev.map((form, index) =>
                 index === formIndex
                     ? {
-                          ...form,
-                          tableForm: [
-                              ...form.tableForm,
-                              { id: form.tableForm.length + 1, data: {} }, // Add new row
-                          ],
-                      }
+                        ...form,
+                        tableForm: [
+                            ...form.tableForm,
+                            { id: form.tableForm.length + 1, data: {} }, // Add new row
+                        ],
+                    }
                     : form
             )
         );
@@ -438,171 +439,170 @@ const State = () => {
                                             />
                                         </Form.Group>
                                     </div>
-                                </div>             
+                                </div>
                             )}
 
-                            {form.tableForm.map((tableForm, formIndex) => {
 
-                                console.log(form);
 
-                                return (
-                                    (
-                                        form.data.party_responsibility_status?.value === "state" ||
-                                        form.data.party_responsibility_status?.value === "zone" ||
-                                        form.data.party_responsibility_status?.value === "party_district"
-                                    ) &&
-                                    (
-                                        <div key={formIndex} className="mb-4 p-3 mt-4" style={{ border: "1px solid black" }}>
-                                            <div className="row mb-3">
-                                                <div className="col-md-4">
-                                                    <Form.Group>
-                                                        <Form.Label>தேர்ந்தெடுக்கப்பட்ட பொ.நியமனம்</Form.Label>
-                                                        <Form.Control
-                                                            type="text"
-                                                            name="choosen_appointment"
-                                                            value={form.data.appointment || ""}
-                                                            readOnly
-                                                        />
-                                                    </Form.Group>
-                                                </div>
-                                                <div className="col-md-8 d-flex justify-content-end align-items-end">
-                                                    <Button
-                                                        className="flex-shrink-0"
-                                                        style={{ backgroundColor: "#FAE818", color: "#000", border: "none" }}
-                                                        onClick={() => addNewTableForm(index)} // Use `index` instead of `formIndex`
-                                                    >
-                                                        <b>+</b>
-                                                    </Button>
-                                                </div>
+
+                            {(
+                                forms[index]?.data?.party_responsibility_status?.value === "state" ||
+                                forms[index]?.data?.party_responsibility_status?.value === "zone" ||
+                                forms[index]?.data?.party_responsibility_status?.value === "party_district"
+                            ) &&
+                                (
+                                    <div className="mb-4 p-3 mt-4" style={{ border: "1px solid black" }}>
+                                        <div className="row mb-3">
+                                            <div className="col-md-4">
+                                                <Form.Group>
+                                                    
+                                                    <Form.Label>தேர்ந்தெடுக்கப்பட்டபொ.நியமனம்</Form.Label>
+                                                    <Form.Control
+                                                        type="text"
+                                                        name="choosen_appointment"
+                                                        value={form.data.appointment || ""}
+                                                        readOnly
+                                                    />
+                                                </Form.Group>
                                             </div>
-
-                                            <table className="table table-bordered text-center">
-                                                <thead className="table-light">
-                                                    <tr>
-                                                        <th>பொறுப்பு</th>
-                                                        <th>உறுப்பினர் எண்</th>
-                                                        <th>முழுப் பெயர்</th>
-                                                        <th>வாக்கக எண்</th>
-                                                        <th>பெயர்</th>
-                                                        <th>த/க பெயர்</th>
-                                                        <th>புகைப்படம்</th>
-                                                        <th></th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {form.tableForm.map((tableForm, tableIndex) => (
-                                                        <tr key={tableIndex}>
-                                                            <td>
-                                                                <Form.Select
-                                                                    value={tableForm.data.roleId || ""}
-                                                                    onChange={(e) =>
-                                                                        handleInputChange(index, tableIndex, "roleId", e.target.value, true)
-                                                                    }
-                                                                >
-                                                                    <option value="">தேர்ந்தெடு</option>
-                                                                    {getAvailableRoles(index, tableIndex).map((role) => (
-                                                                        <option key={role.id} value={String(role.name)}>
-                                                                            {role.name}
-                                                                        </option>
-                                                                    ))}
-                                                                </Form.Select>
-                                                            </td>
-                                                            <td>
-                                                                <Form.Group>
-                                                                    <Form.Control
-                                                                        type="text"
-                                                                        value={tableForm.data.memberNumber || ""}
-                                                                        onBlur={(e) =>
-                                                                            handleInputChange(index, tableIndex, "memberNumber", e.target.value, true)
-                                                                        }
-                                                                        onChange={(e) =>
-                                                                            handleInputChange(index, tableIndex, "memberNumber", e.target.value, true)
-                                                                        }
-                                                                    />
-                                                                    {tableForm?.loading && <Spinner animation="border" size="sm" />}
-                                                                </Form.Group>
-                                                            </td>
-                                                            <td>
-                                                                <Form.Control
-                                                                    type="text"
-                                                                    value={tableForm.data.fullName || ""}
-                                                                    readOnly
-                                                                />
-                                                            </td>
-                                                            <td>
-                                                                <Form.Control
-                                                                    type="text"
-                                                                    value={tableForm.data.voteNumber || ""}
-                                                                    onChange={(e) =>
-                                                                        handleInputChange(index, tableIndex, "voteNumber", e.target.value, true)
-                                                                    }
-                                                                />
-                                                            </td>
-                                                            <td>
-                                                                <Form.Control
-                                                                    type="text"
-                                                                    value={tableForm.data.name || ""}
-                                                                    readOnly
-                                                                />
-                                                            </td>
-                                                            <td>
-                                                                <Form.Control
-                                                                    type="text"
-                                                                    value={tableForm.data.fatherName || ""}
-                                                                    readOnly
-                                                                />
-                                                            </td>
-                                                            <td>
-                                                                {tableForm.data.image ? (
-                                                                    <img
-                                                                        src={tableForm.data.image}
-                                                                        alt="Member"
-                                                                        style={{
-                                                                            width: 50,
-                                                                            height: 50,
-                                                                            borderRadius: "50%",
-                                                                            objectFit: "cover",
-                                                                        }}
-                                                                    />
-                                                                ) : (
-                                                                    <i
-                                                                        className="fa fa-user"
-                                                                        style={{
-                                                                            fontSize: 24,
-                                                                            width: 50,
-                                                                            height: 50,
-                                                                            borderRadius: "50%",
-                                                                            backgroundColor: "#e0e0e0",
-                                                                            display: "flex",
-                                                                            justifyContent: "center",
-                                                                            alignItems: "center",
-                                                                        }}
-                                                                    ></i>
-                                                                )}
-                                                            </td>
-                                                            <td>
-                                                                <FontAwesomeIcon
-                                                                    style={{
-                                                                        border: "none",
-                                                                        backgroundColor: "#EE1B24",
-                                                                        borderRadius: "5px",
-                                                                        padding: "10px",
-                                                                        cursor: "pointer",
-                                                                        marginTop: "20px",
-                                                                    }}
-                                                                    icon={faTimes}
-                                                                    onClick={() => removeTableForm(index, tableIndex)}
-                                                                    disabled={form.tableForm.length === 1}
-                                                                />
-                                                            </td>
-                                                        </tr>
-                                                    ))}
-                                                </tbody>
-                                            </table>
+                                            <div className="col-md-8 d-flex justify-content-end align-items-end">
+                                                <Button
+                                                    className="flex-shrink-0"
+                                                    style={{ backgroundColor: "#FAE818", color: "#000", border: "none" }}
+                                                    onClick={() => addNewTableForm(index)} // Use `index` instead of `formIndex`
+                                                >
+                                                    <b>+</b>
+                                                </Button>
+                                            </div>
                                         </div>
-                                    )
-                                )
-                            })}
+
+                                        <table className="table table-bordered text-center">
+                                            <thead className="table-light">
+                                                <tr>
+                                                    <th>பொறுப்பு</th>
+                                                    <th>உறுப்பினர் எண்</th>
+                                                    <th>முழுப் பெயர்</th>
+                                                    <th>வாக்கக எண்</th>
+                                                    <th>பெயர்</th>
+                                                    <th>த/க பெயர்</th>
+                                                    <th>புகைப்படம்</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {form.tableForm.map((tableForm, tableIndex) => (
+                                                    <tr key={tableIndex}>
+                                                        <td>
+                                                            <Form.Select
+                                                                value={tableForm.data.roleId || ""}
+                                                                onChange={(e) =>
+                                                                    handleInputChange(index, tableIndex, "roleId", e.target.value, true)
+                                                                }
+                                                            >
+                                                                <option value="">தேர்ந்தெடு</option>
+                                                                {getAvailableRoles(index, tableIndex).map((role) => (
+                                                                    <option key={role.id} value={String(role.name)}>
+                                                                        {role.name}
+                                                                    </option>
+                                                                ))}
+                                                            </Form.Select>
+                                                        </td>
+                                                        <td>
+                                                            <Form.Group>
+                                                                <Form.Control
+                                                                    type="text"
+                                                                    value={tableForm.data.memberNumber || ""}
+                                                                    onBlur={(e) =>
+                                                                        handleInputChange(index, tableIndex, "memberNumber", e.target.value, true)
+                                                                    }
+                                                                    onChange={(e) =>
+                                                                        handleInputChange(index, tableIndex, "memberNumber", e.target.value, true)
+                                                                    }
+                                                                />
+                                                                {tableForm?.loading && <Spinner animation="border" size="sm" />}
+                                                            </Form.Group>
+                                                        </td>
+                                                        <td>
+                                                            <Form.Control
+                                                                type="text"
+                                                                value={tableForm.data.fullName || ""}
+                                                                readOnly
+                                                            />
+                                                        </td>
+                                                        <td>
+                                                            <Form.Control
+                                                                type="text"
+                                                                value={tableForm.data.voteNumber || ""}
+                                                                onChange={(e) =>
+                                                                    handleInputChange(index, tableIndex, "voteNumber", e.target.value, true)
+                                                                }
+                                                            />
+                                                        </td>
+                                                        <td>
+                                                            <Form.Control
+                                                                type="text"
+                                                                value={tableForm.data.name || ""}
+                                                                readOnly
+                                                            />
+                                                        </td>
+                                                        <td>
+                                                            <Form.Control
+                                                                type="text"
+                                                                value={tableForm.data.fatherName || ""}
+                                                                readOnly
+                                                            />
+                                                        </td>
+                                                        <td>
+                                                            {tableForm.data.image ? (
+                                                                <img
+                                                                    src={tableForm.data.image}
+                                                                    alt="Member"
+                                                                    style={{
+                                                                        width: 50,
+                                                                        height: 50,
+                                                                        borderRadius: "50%",
+                                                                        objectFit: "cover",
+                                                                    }}
+                                                                />
+                                                            ) : (
+                                                                <i
+                                                                    className="fa fa-user"
+                                                                    style={{
+                                                                        fontSize: 24,
+                                                                        width: 50,
+                                                                        height: 50,
+                                                                        borderRadius: "50%",
+                                                                        backgroundColor: "#e0e0e0",
+                                                                        display: "flex",
+                                                                        justifyContent: "center",
+                                                                        alignItems: "center",
+                                                                    }}
+                                                                ></i>
+                                                            )}
+                                                        </td>
+                                                        <td>
+                                                            <FontAwesomeIcon
+                                                                style={{
+                                                                    border: "none",
+                                                                    backgroundColor: "#EE1B24",
+                                                                    borderRadius: "5px",
+                                                                    padding: "10px",
+                                                                    cursor: "pointer",
+                                                                    marginTop: "20px",
+                                                                }}
+                                                                icon={faTimes}
+                                                                onClick={() => removeTableForm(index, tableIndex)}
+                                                                disabled={form.tableForm.length === 1}
+                                                            />
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                )}
+
+
                             {/* Modal */}
                             <Modal
                                 isOpen={modalIsOpen}

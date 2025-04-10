@@ -86,7 +86,7 @@ const PdfScreen1 = ({ formData, tableData }) => {
                         {formData.map((formItem, i) => (
                             Array.isArray(formItem?.tableForm) &&
                             formItem.tableForm.map((tabData, idx) => (
-                                <div className="d-flex" key={`${i}-${idx}`} style={{ padding: '8px 0', borderBottom: '1px solid #ccc' }}>
+                                <div className="d-flex" key={`${i}-${idx}`} style={{ padding: '8px 0' }}>
                                     <div className="col">{tabData?.data?.roleId || '___'}</div>
                                     <div className="col">{tabData?.data?.fullName || tabData?.data?.name || '___'}</div>
                                     <div className="col">{tabData?.data?.memberNumber || '___'}</div>
