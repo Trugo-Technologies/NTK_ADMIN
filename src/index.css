@@ -1,11 +1,11 @@
 body {
   margin: 0;
-  font-family: url('../public/fonts/UniIla.Sundaram-07.ttf');
+  font-family: url('../public/fonts/UniIla.Sundaram-11.ttf');
   font-size: 13px;
 }
 
 code {
-  font-family: 'Uni Ila-Sundaram-07', sans-serif;
+  font-family: 'Uni Ila-Sundaram-11', sans-serif;
 
 }
 
@@ -21,7 +21,7 @@ code {
   }
 
   body {
-    font-family: url('../public/fonts/UniIla.Sundaram-07.ttf');
+    font-family: url('../public/fonts/UniIla.Sundaram-11.ttf');
     font-size: 13px;
   }
 
@@ -58,12 +58,12 @@ code {
     margin: 50mm 10mm 30mm 10mm;
     padding: 0;
     box-sizing: border-box;
-    font-family: url('../public/fonts/UniIla.Sundaram-07.ttf');
+    font-family: url('../public/fonts/UniIla.Sundaram-11.ttf');
     font-size: 13px;
   }
 
   .container {
-    font-family: url('../public/fonts/UniIla.Sundaram-07.ttf');
+    font-family: url('../public/fonts/UniIla.Sundaram-11.ttf');
     font-size: 13px;
   }
 
@@ -97,7 +97,7 @@ code {
     margin-right: 40px;
     line-height: 30px;
     word-spacing: normal;
-    font-family: url('../public/fonts/UniIla.Sundaram-07.ttf');
+    font-family: url('../public/fonts/UniIla.Sundaram-11.ttf');
     font-size: 13px;
   }
 

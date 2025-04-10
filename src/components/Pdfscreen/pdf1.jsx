@@ -51,13 +51,11 @@ const PdfScreen1 = ({ formData, tableData }) => {
                 ref={contentRef}
             >
 
-                {/* Header Section */}
                 <div className="header w-100" style={{ height: "40mm" }}>
                     <img src="/Header.jpg" alt="Header" className="img-fluid w-100 h-100"
                         style={{ objectFit: "cover" }} crossOrigin="anonymous" />
                 </div>
 
-                {/* Main Content Section */}
                 <div className="content " style={{ fontSize: '14px' }}>
                     <div className="text-end" style={{ marginTop: "20px", marginRight: "40px", lineHeight: "1.2" }}>
                         <p className="text-dark" style={{ margin: 0 }}>க.எண் : 733653482 </p>
@@ -81,23 +79,31 @@ const PdfScreen1 = ({ formData, tableData }) => {
                             <div className="col">உறுப்பினர் எண்</div>
                             <div className="col">வாக்கக எண்</div>
                         </div>
-                        <p className="fw-bold  mt-1"><strong>{formData?.[0]?.data?.district_name || '___'}</strong> <strong>{formData?.[0]?.data?.zone_name || '___'}</strong> மண்டலம் பொறுப்பாளர்</p>
-
                         {formData.map((formItem, i) => (
-                            Array.isArray(formItem?.tableForm) &&
-                            formItem.tableForm.map((tabData, idx) => (
-                                <div className="d-flex" key={`${i}-${idx}`} style={{ padding: '8px 0' }}>
-                                    <div className="col">{tabData?.data?.roleId || '___'}</div>
-                                    <div className="col">{tabData?.data?.fullName || tabData?.data?.name || '___'}</div>
-                                    <div className="col">{tabData?.data?.memberNumber || '___'}</div>
-                                    <div className="col">{tabData?.data?.voteNumber || '___'}</div>
-                                </div>
-                            ))
+                            <div key={i} className="mb-3">
+                                <p className="fw-bold mt-1">
+                                <strong>{formItem?.data?.appointment || '___'}</strong>{' '}<strong>பொறுப்பாளர்கள்</strong>{' - '}<strong>{formItem?.data?.district_name || '___'}</strong>{' '}
+                                    <strong>{formItem?.data?.zone_name || '___'}</strong>{' '}<strong>{formItem?.data?.party_responsibility_status.label || '___'}</strong>
+                                </p>
+                                <p className="fw-bold mt-1">
+                                (<strong>வாக்ககம் </strong>{' - '}<strong>{formItem?.data?.number || '___'}</strong>)
+                                </p>
+
+                                {Array.isArray(formItem?.tableForm) &&
+                                    formItem.tableForm.map((tabData, idx) => (
+                                        <div className="d-flex" key={`${i}-${idx}`} style={{ padding: '8px 0' }}>
+                                            <div className="col">{tabData?.data?.roleId || '___'}</div>
+                                            <div className="col">{tabData?.data?.name || tabData?.data?.name || '___'}</div>
+                                            <div className="col">{tabData?.data?.memberNumber || '___'}</div>
+                                            <div className="col">{tabData?.data?.voteNumber || '___'}</div>
+                                        </div>
+                                    ))}
+                            </div>
                         ))}
 
 
                     </div>
-                    <div className="d-flex flex-column p-2" style={{ textAlign: "start", marginLeft: '30px' }}>
+                    {/* <div className="d-flex flex-column p-2" style={{ textAlign: "start", marginLeft: '30px' }}>
                         <p className="fw-bold  ">இராமநாதபுரம் திருவாடானை வடக்கு மாவட்டப் பொறுப்பாளர்</p>
                         <p className="fw-bold  ">129 வாக்ககங்கள் (1-129)</p>
 
@@ -234,15 +240,13 @@ const PdfScreen1 = ({ formData, tableData }) => {
                                 பொறுப்பையும் கடமையையும் உணர்ந்து நீங்கள் சிறப்பாகச் செயலாற்றுவீர்கள் என்ற  நம்பிக்கையோடு
                             </p>
 
-                            {/* Signature Section */}
                             <div className="d-flex flex-column align-items-center align-self-end">
                                 <p className="fw-semibold m-0">சீமான்</p>
                                 <p className="text-muted m-0">தலைமை ஒருங்கிணைப்பாளர்</p>
                             </div>
 
                         </div>
-                    </div>
-
+                    </div> */}
                 </div>
                 {/* Footer Section */}
                 <div className="footer w-100" >

@@ -317,9 +317,6 @@ const State = () => {
                         <div key={form.id} className="mb-4 border p-3 rounded shadow-sm form-area">
                             {/* First Row */}
                             <div className="row">
-                                <h5 className="mb-3">
-                                    <b>பொறுப்பாளர் தகவல் #{index + 1}</b>
-                                </h5>
                                 <div className="col-md-4">
                                     <Form.Group className="mb-3">
                                         <Form.Label>கட்சிப்பொறுப்பு நிலை</Form.Label>
@@ -417,7 +414,7 @@ const State = () => {
                                             <Form.Label>மாவட்டம்</Form.Label>
                                             <Form.Control
                                                 type="text"
-                                                onChange={(e) => handleInputChange(index, "district", e.target.value)}
+                                                onChange={(e) => handleInputChange(index, null, "district", e.target.value)}
                                             />
                                         </Form.Group>
                                     </div>
@@ -426,7 +423,7 @@ const State = () => {
                                             <Form.Label>தொகுதி</Form.Label>
                                             <Form.Control
                                                 type="text"
-                                                onChange={(e) => handleInputChange(index, "zone", e.target.value)}
+                                                onChange={(e) => handleInputChange(index, null, "zone", e.target.value)}
                                             />
                                         </Form.Group>
                                     </div>
@@ -435,7 +432,7 @@ const State = () => {
                                             <Form.Label>வாக்கக எண்</Form.Label>
                                             <Form.Control
                                                 type="number"
-                                                onChange={(e) => handleInputChange(index, "number", e.target.value)}
+                                                onChange={(e) => handleInputChange(index, null, "number", e.target.value)}
                                             />
                                         </Form.Group>
                                     </div>
@@ -501,7 +498,7 @@ const State = () => {
                                                             >
                                                                 <option value="">தேர்ந்தெடு</option>
                                                                 {getAvailableRoles(index, tableIndex).map((role) => (
-                                                                    <option key={role.id} value={String(role.id)}>
+                                                                    <option key={role.id} value={String(role.name)}>
                                                                         {role.name}
                                                                     </option>
                                                                 ))}
