@@ -455,7 +455,7 @@ const State = () => {
                                         <div className="row mb-3">
                                             <div className="col-md-4">
                                                 <Form.Group>
-                                                    
+
                                                     <Form.Label>தேர்ந்தெடுக்கப்பட்டபொ.நியமனம்</Form.Label>
                                                     <Form.Control
                                                         type="text"
@@ -501,11 +501,12 @@ const State = () => {
                                                             >
                                                                 <option value="">தேர்ந்தெடு</option>
                                                                 {getAvailableRoles(index, tableIndex).map((role) => (
-                                                                    <option key={role.id} value={String(role.name)}>
+                                                                    <option key={role.id} value={String(role.id)}>
                                                                         {role.name}
                                                                     </option>
                                                                 ))}
                                                             </Form.Select>
+
                                                         </td>
                                                         <td>
                                                             <Form.Group>
