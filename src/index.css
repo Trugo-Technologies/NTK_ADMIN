@@ -1,32 +1,37 @@
+/* Define the custom font using @font-face */
+@font-face {
+  font-family: 'UniIlaSundaram';
+  src: url('../public/fonts/UniIla.Sundaram-07.ttf') format('truetype');
+}
+
 body {
   margin: 0;
-  font-family: url('../public/fonts/UniIla.Sundaram-11.ttf');
+  font-family: 'UniIlaSundaram', sans-serif;
   font-size: 13px;
+  background: white !important; /* Ensure the background is white */
 }
 
 code {
-  font-family: 'Uni Ila-Sundaram-11', sans-serif;
-
+  font-family: 'UniIlaSundaram', sans-serif;
 }
 
-
-
 @media print {
-
   @page {
     size: A4;
-    /* Standard page size */
     margin: 0;
-    /* Remove all margins to eliminate white space */
   }
 
   body {
-    font-family: url('../public/fonts/UniIla.Sundaram-11.ttf');
+    font-family: 'UniIlaSundaram', sans-serif;
     font-size: 13px;
+    background: white; /* Ensure the background is white for printing */
   }
 
   .printcontent {
     border: none;
+    background: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+    backdrop-filter: blur(10px); /* Apply blur effect */
+    -webkit-backdrop-filter: blur(10px); /* Safari support */
   }
 
   /* Fixed Header */
@@ -36,7 +41,9 @@ code {
     left: 0;
     width: 100%;
     height: 50mm;
-    background: white;
+    background: rgba(255, 255, 255, 0.8); /* Semi-transparent white */
+    backdrop-filter: blur(10px); /* Apply blur effect */
+    -webkit-backdrop-filter: blur(10px); /* Safari support */
     z-index: 10;
   }
 
@@ -47,33 +54,38 @@ code {
     left: 0;
     width: 100%;
     height: 20mm;
-    background: white;
+    background: rgba(255, 255, 255, 0.8); /* Semi-transparent white */
+    backdrop-filter: blur(10px); /* Apply blur effect */
+    -webkit-backdrop-filter: blur(10px); /* Safari support */
     text-align: center;
     z-index: 10;
-
   }
 
   /* Adjust content so it doesn't overlap with header/footer */
   .content {
-    margin: 50mm 10mm 30mm 10mm;
+    margin: 50mm 0mm 30mm 0mm;
     padding: 0;
     box-sizing: border-box;
-    font-family: url('../public/fonts/UniIla.Sundaram-11.ttf');
+    font-family: 'UniIlaSundaram', sans-serif;
     font-size: 13px;
+    background: rgba(255, 255, 255, 0.8); /* Semi-transparent white */
+    backdrop-filter: blur(10px); /* Apply blur effect */
+    -webkit-backdrop-filter: blur(10px); /* Safari support */
+  }
+
+  .main_content {
+    margin: 0 40px 0 40px;
   }
 
   .container {
-    font-family: url('../public/fonts/UniIla.Sundaram-11.ttf');
+    font-family: 'UniIlaSundaram', sans-serif;
     font-size: 13px;
   }
 
-
   .pagecontent2 {
     page-break-before: always;
-    /* Forces a new page */
     margin: 0;
     padding-top: 50mm;
-    /* Ensure space below header */
   }
 
   .desContent {
@@ -82,8 +94,7 @@ code {
     margin-right: 30px;
     line-height: 30px;
     word-spacing: normal;
-    font-size: 16px;
-
+    font-size: 13px;
   }
 
   .desContent p {
@@ -97,7 +108,7 @@ code {
     margin-right: 40px;
     line-height: 30px;
     word-spacing: normal;
-    font-family: url('../public/fonts/UniIla.Sundaram-11.ttf');
+    font-family: 'UniIlaSundaram', sans-serif;
     font-size: 13px;
   }
 

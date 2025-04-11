@@ -52,7 +52,7 @@ const State = () => {
         loading: false
     };
 
-    const handleDepartmentChange = (formIndex, field, value) => {
+    const handleDepartmentChange = (formIndex, field, value,) => {
         const department = departments.find(dept => dept._id.toString() === value);
         setSelectedRoles(department ? department.roles : []);
 
@@ -65,7 +65,7 @@ const State = () => {
     };
 
     const handleDistrictChange = async (formIndex, field, value) => {
-        const selectedDistrict = district.find(dis => dis._id.toString() === value);
+        const selectedDistrict = district.find(dis => dis._id === value);
 
 
         handleInputChange(formIndex, null, "district_name", selectedDistrict?.name || "");
@@ -75,7 +75,14 @@ const State = () => {
             const response = await axiosInstance.get(
                 `https://api.naamtamilar.org/api/location/district/constituency/list/${value}`
             );
-            setZones(response.data);
+            setForms((prev) => {
+                const updated = [...prev];
+                updated[formIndex] = {
+                    ...updated[formIndex],
+                    zones: response.data, // Add zones to the specific form
+                };
+                return updated;
+            });
         } catch (error) {
             console.error("Error fetching zones:", error);
             setZones([]);
@@ -83,12 +90,12 @@ const State = () => {
     };
 
     const handleZoneChange = (formIndex, field, value) => {
-        const selectedZone = zones.find(zone => zone._id.toString() === value);
+        const selectedZone = forms[formIndex]?.zones?.find(zone => zone._id.toString() === value);
         handleInputChange(formIndex, null, "zone_name", selectedZone?.name || "");
     };
 
     const addNewForm = () => {
-        setForms(prev => [...prev, { id: prev.length + 1, data: {}, tableForm: [{ id: 1, data: {} }] }]);
+        setForms(prev => [...prev, { id: prev.length + 1, data: {}, tableForm: [{ id: 1, data: {} }], zones: [] }]);
     };
     console.log("forms", forms);
 
@@ -127,7 +134,7 @@ const State = () => {
 
     const getAvailableRoles = (formIndex, currentIndex) => {
         const selectedRoleIds = forms[formIndex].tableForm
-            .filter((_, idx) => idx !== currentIndex)
+            .filter((_, idx) => idx !== currentIndex) // Exclude the current row
             .map(entry => String(entry?.data?.roleId))
             .filter(Boolean);
 
@@ -150,7 +157,7 @@ const State = () => {
     // Handle form data change
     const handleInputChange = async (formIndex, tableIndex, field, value, isTableForm = false) => {
         if (field === "memberNumber") {
-            // Show loading spinner
+            // Show loading spinner for the specific row
             setForms((prev) => {
                 const updated = [...prev];
                 const form = { ...updated[formIndex] };
@@ -177,7 +184,7 @@ const State = () => {
                     }
                     : { memberNumber: value };
 
-                // Set mapped data
+                // Update the specific row with fetched data
                 setForms((prev) => {
                     const updated = [...prev];
                     const form = { ...updated[formIndex] };
@@ -213,6 +220,7 @@ const State = () => {
                 });
             }
         } else {
+            // Handle other fields
             setForms((prev) => {
                 const updated = [...prev];
                 const form = { ...updated[formIndex] };
@@ -270,6 +278,7 @@ const State = () => {
                     "https://api.naamtamilar.org/api/location/district/list/5ae6c7deab123c41f43bb368",
 
                 );
+                console.log("Fetched Districts:", response.data); // Debugging the districts
                 setDistricts(response.data);
             } catch (error) {
                 console.error("Error fetching departments:", error);
@@ -356,10 +365,7 @@ const State = () => {
                                         <Form.Group className="mb-3">
                                             <Form.Label>மாவட்டம்</Form.Label>
                                             <Form.Select
-                                                onChange={(e) =>
-                                                    handleDistrictChange(index, "district", e.target.value)
-                                                }
-
+                                                onChange={(e) => handleDistrictChange(index, null, e.target.value)} // Pass the correct value
                                             >
                                                 <option>தேர்ந்தெடு</option>
                                                 {district.map((dis) => (
@@ -376,13 +382,10 @@ const State = () => {
                                         <Form.Group className="mb-3">
                                             <Form.Label>தொகுதி</Form.Label>
                                             <Form.Select
-                                                onChange={(e) =>
-                                                    handleZoneChange(index, "zone", e.target.value)
-                                                }
-
+                                                onChange={(e) => handleZoneChange(index, null, e.target.value)}
                                             >
                                                 <option>தேர்ந்தெடு</option>
-                                                {zones.map((zone) => (
+                                                {(forms[index]?.zones || []).map((zone) => (
                                                     <option key={zone._id} value={zone._id}>
                                                         {zone.name}
                                                     </option>
@@ -414,16 +417,24 @@ const State = () => {
                                             <Form.Label>மாவட்டம்</Form.Label>
                                             <Form.Control
                                                 type="text"
-                                                onChange={(e) => handleInputChange(index, null, "district", e.target.value)}
+
+                                                onChange={(e) =>
+                                                    handleInputChange(index, null, "district_name", e.target.value)
+                                                }
                                             />
                                         </Form.Group>
                                     </div>
+
+                                    {/* Zone Select */}
                                     <div className="col-md-4">
                                         <Form.Group className="mb-3">
                                             <Form.Label>தொகுதி</Form.Label>
                                             <Form.Control
                                                 type="text"
-                                                onChange={(e) => handleInputChange(index, null, "zone", e.target.value)}
+
+                                                onChange={(e) =>
+                                                    handleInputChange(index, null, "zone_name", e.target.value)
+                                                }
                                             />
                                         </Form.Group>
                                     </div>
@@ -453,7 +464,7 @@ const State = () => {
                                             <div className="col-md-4">
                                                 <Form.Group>
 
-                                                    <Form.Label>தேர்ந்தெடுக்கப்பட்டபொ.நியமனம்</Form.Label>
+                                                    <Form.Label>தேர்ந்தெடுக்கப்பட்ட பொ.நியமனம்</Form.Label>
                                                     <Form.Control
                                                         type="text"
                                                         name="choosen_appointment"
