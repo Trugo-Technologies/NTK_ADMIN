@@ -53,7 +53,7 @@ const PdfScreen1 = ({ formData, tableData }) => {
 
     return (
         <div className="container d-flex flex-column align-items-center py-4" >
-            <div className="printcontent  " style={{ width: "210mm", minHeight: "297mm" }}
+            <div className="printcontent  " style={{ width: "210mm", minHeight: "297mm", fontFamily: "UniIlaSundaram", margin: "0 30px 0 30px", lineHeight: "20px", fontSize: "16px" }}
                 ref={contentRef}
             >
 
@@ -139,23 +139,24 @@ const PdfScreen1 = ({ formData, tableData }) => {
                             </div>
                         </div>
 
-                        <div className="desContent d-flex flex-column p-2 " >
-                            <p className="  text-dark  " >
-                                மேற்காண் அனைவரும் <strong>நாம் தமிழர் கட்சி</strong>-
-                                <strong> இராமநாதபுரம் திருவாடானை மண்டலத்திற்குட்பட்ட பொறுப்பாளர்களாக </strong>நியமிக்கப்படுகிறார்கள். இவர்கள் அனைவருக்கும் , கட்சியின் அனைத்துநிலைப்  பொறுப்பாளாளர்களும் , அன்பு உறவுகள் அனைவரும் முழு ஒத்துழைப்பு
-                                நல்குமாறு அன்போடு கேட்டு கொள்ளப்படுகிறார்கள்.
-                            </p>
-                            <p className="text-dark">
-                                புதிதாக பொறுபேற்கும் உறவுகள் அனைவர்க்கும் என் புரட்சி வாழ்த்துகள்.
-                                பொறுப்பையும் கடமையையும் உணர்ந்து நீங்கள் சிறப்பாகச் செயலாற்றுவீர்கள் என்ற  நம்பிக்கையோடு.
-                            </p>
+                        {firstPageData.length <= 3 && (
+                            <div className="desContent d-flex flex-column" style={{ margin: "0 30px 0 30px" }}>
+                                <p className="text-dark">
+                                    மேற்காண் அனைவரும் <strong>நாம் தமிழர் கட்சி</strong>-
+                                    <strong> இராமநாதபுரம் திருவாடானை மண்டலத்திற்குட்பட்ட பொறுப்பாளர்களாக </strong>நியமிக்கப்படுகிறார்கள். இவர்கள் அனைவருக்கும் , கட்சியின் அனைத்துநிலைப்  பொறுப்பாளாளர்களும் , அன்பு உறவுகள் அனைவரும் முழு ஒத்துழைப்பு
+                                    நல்குமாறு அன்போடு கேட்டு கொள்ளப்படுகிறார்கள்.
+                                </p>
+                                <p className="text-dark">
+                                    புதிதாக பொறுபேற்கும் உறவுகள் அனைவர்க்கும் என் புரட்சி வாழ்த்துகள்.
+                                    பொறுப்பையும் கடமையையும் உணர்ந்து நீங்கள் சிறப்பாகச் செயலாற்றுவீர்கள் என்ற  நம்பிக்கையோடு.
+                                </p>
 
-                            <div className="d-flex flex-column align-items-center align-self-end">
-                                <p className="fw-semibold m-0">சீமான்</p>
-                                <p className="text-muted m-0">தலைமை ஒருங்கிணைப்பாளர்</p>
+                                <div className="d-flex flex-column align-items-center align-self-end">
+                                    <p className="fw-semibold m-0">சீமான்</p>
+                                    <p className="text-muted m-0">தலைமை ஒருங்கிணைப்பாளர்</p>
+                                </div>
                             </div>
-
-                        </div>
+                        )}
                     </div>
                 </div>
                 {/* Footer Section */}

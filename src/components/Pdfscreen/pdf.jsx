@@ -7,21 +7,20 @@ import { useReactToPrint } from "react-to-print";
 const PdfScreen = ({ formData, tableData }) => {
     const contentRef = useRef(null);
     const reactToPrintFn = useReactToPrint({ contentRef });
-    console.log("form:", formData);
-    console.log("Tableform:", tableData);
-
-
 
     const generatePDF = () => {
         const input = contentRef.current;
 
-        html2canvas(input, { scale: 3, useCORS: true, logging: false })
+        // Ensure proper dimensions for the input element
+        input.style.width = "210mm";
+        input.style.height = "297mm";
+
+        html2canvas(input, { scale: 3, useCORS: true, logging: false, letterRendering: true })
             .then((canvas) => {
                 const imgData = canvas.toDataURL("image/png");
                 const pdf = new jsPDF("p", "mm", "a4", true); // 'true' for better quality
 
                 const pageWidth = 210; // A4 width in mm
-                const pageHeight = 297; // A4 height in mm
                 const imgWidth = pageWidth;
                 const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
@@ -36,7 +35,9 @@ const PdfScreen = ({ formData, tableData }) => {
 
     return (
         <div className="container d-flex flex-column align-items-center py-4">
-            <div className="card " style={{ width: "210mm", height: "297mm", position: "relative" }} ref={contentRef}>
+            <div className="card " style={{
+                width: "210mm", height: "297mm", position: "relative", fontFamily: "UniIlaSundaram", margin: "0 40px 0 40px", lineHeight: "20px"
+            }} ref={contentRef}>
                 {/* Header Section */}
                 <div className="w-100" style={{ height: "40mm" }}>
                     <img src="/Header.jpg" alt="Header" className="img-fluid w-100 h-100" style={{ objectFit: "cover" }} crossOrigin="anonymous" />
@@ -49,11 +50,11 @@ const PdfScreen = ({ formData, tableData }) => {
                         <p className="text-dark" style={{ margin: 0 }}>நாள் : 25.03.2025</p>
                     </div>
 
-                    <h5 className="text-center fw-bold text-dark " style={{ marginTop: '40px', fontSize: "13px" }}>அறிவிப்பு:</h5>
-                    <div className="desContent2 d-flex flex-column ">
-                        <p className="text-dark">
+                    <h5 className="text-center fw-bold text-dark " style={{ marginTop: '40px', fontSize: "18px" }}>அறிவிப்பு:</h5>
+                    <div className="desContent2 d-flex flex-column" style={{ margin: "0 50px 0 50px", lineHeight: "25px" }}>
+                        <p className="text-dark" style={{ textIndent: "40px" }}>
                             <strong>{formData?.[0]?.data?.district_name || '___'}</strong> மாவட்டம், <strong>{formData?.[0]?.data?.zone_name || '___'}</strong> தொகுதி, <strong>{formData?.[0]?.data?.number || '___'}</strong> ஆவது வாக்ககத்தைச் சேர்ந்த
-                            <strong> {formData?.[0]?.tableForm[0]?.data?.name || 'பயனர் பெயர்'} ({formData?.[0]?.tableForm[0]?.data?.memberNumber || 'ID'}) </strong> அவர்கள்,
+                            <strong> {formData?.[0]?.tableForm[0]?.data?.name || 'பயனர் பெயர்'} ({formData?.[0]?.tableForm[0]?.data?.memberNumber || 'ID'}) </strong> அவர்கள், {' '}
                             <strong>நாம் தமிழர் கட்சி</strong> - <strong>{formData?.[0]?.data?.appointment || '___'}</strong> <strong>ஒருங்கிணைப்பாளர்களில் ஒருவராக  </strong>
                             நியமிக்கப்படுகிறார்.
                         </p>
@@ -61,7 +62,7 @@ const PdfScreen = ({ formData, tableData }) => {
                         <p className="text-dark">
                             இவருக்கு, கட்சியின் அனைத்துநிலைப் பொறுப்பாளர்களும், அன்பு உறவுகள் அனைவரும் முழு ஒத்துழைப்பு நல்குமாறு அன்போடு கேட்டுக் கொள்ளப்படுகிறார்கள்,
                         </p>
-                        <p className="text-dark">
+                        <p className="text-dark" style={{ textIndent: "40px" }}>
                             புதிதாகப் பொறுப்பேற்கும் உறவுக்கு என்னுடைய புரட்சி வாழ்த்துக்கள். பொறுப்பையும், கடமையையும் உணர்ந்து நீங்கள் சிறப்பாகச் செயலாற்றுவீர்கள் என்ற நம்பிக்கையோடு!
                         </p>
                         {/* <p className="text-dark">
@@ -69,9 +70,9 @@ const PdfScreen = ({ formData, tableData }) => {
                         </p> */}
                     </div>
                     {/* Signature Section */}
-                    <div className="text-end" style={{ marginRight: "40px", marginTop:"80px" }}>
-                        <p className="fw-semibold" style={{marginRight:"80px"}}>சீமான்</p>
-                        <p className="text-muted">தலைமை ஒருங்கிணைப்பாளர்</p>
+                    <div className="text-end" style={{ marginRight: "40px", marginTop: "80px" }}>
+                        <p className="fw-semibold mb-0" style={{ marginRight: "60px", fontSize: "16px" }}>சீமான்</p>
+                        <p className="text-muted" style={{ fontSize: "16px" }}>தலைமை ஒருங்கிணைப்பாளர்</p>
                     </div>
                 </div>
 

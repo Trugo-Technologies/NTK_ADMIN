@@ -52,16 +52,25 @@ const State = () => {
         loading: false
     };
 
-    const handleDepartmentChange = (formIndex, field, value,) => {
-        const department = departments.find(dept => dept._id.toString() === value);
-        setSelectedRoles(department ? department.roles : []);
+    const handleDepartmentChange = (formIndex, field, value) => {
+        const department = departments.find((dept) => dept._id.toString() === value);
 
+        setForms((prev) => {
+            const updated = [...prev];
+            const form = { ...updated[formIndex] };
 
-        if (department) {
-            handleInputChange(formIndex, null, "appointment", department.name);
-        } else {
-            handleInputChange(formIndex, null, "appointment", "");
-        }
+            // Update the roles for the specific form
+            form.roles = department ? department.roles : [];
+
+            // Update the appointment field
+            form.data = {
+                ...form.data,
+                appointment: department ? department.name : "",
+            };
+
+            updated[formIndex] = form;
+            return updated;
+        });
     };
 
     const handleDistrictChange = async (formIndex, field, value) => {
@@ -95,7 +104,10 @@ const State = () => {
     };
 
     const addNewForm = () => {
-        setForms(prev => [...prev, { id: prev.length + 1, data: {}, tableForm: [{ id: 1, data: {} }], zones: [] }]);
+        setForms((prev) => [
+            ...prev,
+            { id: prev.length + 1, data: {}, tableForm: [{ id: 1, data: {} }], zones: [], roles: [] },
+        ]);
     };
     console.log("forms", forms);
 
@@ -135,10 +147,13 @@ const State = () => {
     const getAvailableRoles = (formIndex, currentIndex) => {
         const selectedRoleIds = forms[formIndex].tableForm
             .filter((_, idx) => idx !== currentIndex) // Exclude the current row
-            .map(entry => String(entry?.data?.roleId))
+            .map((entry) => String(entry?.data?.roleId))
             .filter(Boolean);
 
-        return selectedRoles.filter(role => !selectedRoleIds.includes(String(role.id)));
+        // Use roles specific to the form, fallback to an empty array if undefined
+        return (forms[formIndex].roles || []).filter(
+            (role) => !selectedRoleIds.includes(String(role.id))
+        );
     };
 
     // Handle form data change
