@@ -152,7 +152,7 @@ const State = () => {
 
         // Use roles specific to the form, fallback to an empty array if undefined
         return (forms[formIndex].roles || []).filter(
-            (role) => !selectedRoleIds.includes(String(role.id))
+            (role) => !selectedRoleIds.includes(String(role.name))
         );
     };
 
@@ -529,6 +529,7 @@ const State = () => {
                                                                     </option>
                                                                 ))}
                                                             </Form.Select>
+
 
                                                         </td>
                                                         <td>
