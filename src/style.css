@@ -1,4 +1,11 @@
 /* Reset & Global Styles */
+
+/* Define the custom font using @font-face */
+@font-face {
+    font-family: 'UniIlaSundaram';
+    src: url('../public/fonts/UniIla.Sundaram-07.ttf') format('truetype');
+}
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -6,8 +13,8 @@
 }
 
 body {
-    font-family: url('../public/fonts/UniIla.Sundaram-11.ttf');
-    font-size: 13px;
+    font-family: 'UniIlaSundaram';
+    font-size: 18px;
     width: 100%;
     height: 100vh;
     margin: 0;

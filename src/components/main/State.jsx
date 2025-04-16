@@ -332,7 +332,7 @@ const State = () => {
                     <span className="fw-bold">புதிய பொறுப்பாளர் தகவல்களின்  எண்ணிக்கை : {forms.length}</span>
 
                     {/* Add Button */}
-                    <Button className="flex-shrink-0" style={{ backgroundColor: "#FAE818", color: "#000", border: "none" }} onClick={addNewForm}>+ Add</Button>
+                    <Button className="flex-shrink-0" style={{ backgroundColor: "#FAE818", color: "#000", border: "none" }} onClick={addNewForm}><strong>+ சேர்க்க</strong></Button>
                 </div>
             </div>
             <div className="scrollable-form">
@@ -660,7 +660,7 @@ const State = () => {
                                             cursor: "pointer",
                                         }}
                                     >
-                                        Close
+                                        மூடு
                                     </button>
 
                                     <div style={{ overflowY: "auto", maxHeight: "70vh", paddingRight: "10px" }}>
@@ -671,7 +671,8 @@ const State = () => {
                                                 <Pdf formData={forms} />
                                             )
                                         ) : (
-                                            <div>No data available</div>
+                                            <div>தரவு எதுவும் கிடைக்கவில்லை
+                                            </div>
                                         )}
                                     </div>
                                 </div>
@@ -681,7 +682,7 @@ const State = () => {
                             {/* Remove Button */}
                             <div className="text-end">
                                 <Button style={{ backgroundColor: "#EE1B24", border: "none", color: "#000" }} onClick={() => removeForm(index)} disabled={forms.length === 1}>
-                                    அகற்று
+                                    <strong>அகற்று</strong>
                                 </Button>
                             </div>
                         </div>
